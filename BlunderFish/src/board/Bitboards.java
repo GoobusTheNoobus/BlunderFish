@@ -236,20 +236,6 @@ public class Bitboards {
         return blockers;
     }
 
-    
-
-    static {
-        for (int i = 0; i < 64; i++) {
-            ROOK_MASKS[i] = rookMask(i);
-            BISHOP_MASKS[i] = bishopMask(i);
-        }
-
-        initalizeKnightTable();
-        initalizeKingTable();
-        intializePawnAttackTables();
-        initMagic();
-    }
-
     public static int magicHash (long blockers, long magicNumber, int relevantBits) {
         int shift = 64 - relevantBits;
         return (int)((blockers * magicNumber) >>> shift);
@@ -275,3 +261,4 @@ public class Bitboards {
     }
     
 }
+
