@@ -97,14 +97,14 @@ public class Move {
             return "-";
         }
 
-        /* if (getCastlingFlag(move)) {
+        if (getCastlingFlag(move)) {
             if ((getToSquare(move) & 7) == 2)
                 return "O-O-O";
             else if ((getToSquare(move) & 7) == 6) 
                 return "O-O";
             else 
                 throw new IllegalArgumentException("reprMove: the given move has castling flag, but the to square does not match kingside or queenside squares, the file is: " + (getToSquare(move) & 7));
-        } */
+        } 
 
         String from = Utility.getStringFromSquareInt(getFromSquare(move));
         String to = Utility.getStringFromSquareInt(getToSquare(move));
