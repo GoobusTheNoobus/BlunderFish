@@ -1,10 +1,9 @@
 import board.*;
-import gen.Move;
 import gen.MoveGenerator;
 import utils.*;
 
 
-public class App {
+public class BlunderFish {
     public static void main(String[] args) throws Exception {
         Bitboards.init();
 
@@ -23,15 +22,13 @@ public class App {
             MoveGenerator.generatePsuedoLegalMoves(p);
             MoveGenerator.clearArrays();
         }
+        System.out.println(p.isSquareAttacked(16, true));
         
-        
+    
+
 
         Timer.stop();
-        MoveGenerator.generatePsuedoLegalMoves(p);
-
-        Printing.printMoveList();
-
-    
+        
         Timer.printAverageTime(TEST_ITERS);
 
     }
