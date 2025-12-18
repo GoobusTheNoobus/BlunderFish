@@ -237,8 +237,8 @@ public class Position {
 
         // Sliding Pieces: Magic (not actually magic just a big database) Tables
 
-        int rookIndex = Bitboards.magicHash(occupied & Bitboards.ROOK_MASKS[square], Constants.ROOK_MAGIC_NUMBERS[square], Long.bitCount(Bitboards.ROOK_MASKS[square]));
-        int bishopIndex = Bitboards.magicHash(occupied & Bitboards.BISHOP_MASKS[square], Constants.BISHOP_MAGIC_NUMBERS[square], Long.bitCount(Bitboards.BISHOP_MASKS[square]));
+        int rookIndex = Bitboards.magicHash(occupied & Bitboards.ROOK_MASKS[square], Bitboards.ROOK_MAGIC_NUMBERS[square], Long.bitCount(Bitboards.ROOK_MASKS[square]));
+        int bishopIndex = Bitboards.magicHash(occupied & Bitboards.BISHOP_MASKS[square], Bitboards.BISHOP_MAGIC_NUMBERS[square], Long.bitCount(Bitboards.BISHOP_MASKS[square]));
 
         long rookAttacks = Bitboards.ROOK_ATTACKS[square][rookIndex];
         long bishopAttacks = Bitboards.BISHOP_ATTACKS[square][bishopIndex];
@@ -305,5 +305,13 @@ public class Position {
         return true;
     }
 
-    
+
+    public void printPosition() {
+        for (int i = 7; i >= 0; i--) {
+            for (int j = 0; j < 8; j++) {
+                System.out.print(mailbox[i << 3 | j]);
+            }
+            System.out.println();
+        }
+    }
 }
