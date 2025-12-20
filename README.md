@@ -1,2 +1,12 @@
 # BlunderFish
 I suck at chess so I made a chess engine. I don't know how thats gonna magically make me better, I just wanted to make one. I wrote this in Java, even though I don't actually know a lot of it, I just learned along the way. I first made a design in Python, then switched over to python because the design I went with was horrendously slow. At that speed, it would take a whole minute to get to 2-3 plies into the future. If you stumble onto this be ready to cringe because this is actually one of my first Java code.
+
+## Completed:
+- PseudoLegal move generation
+- Precomputed attacks
+- Magic Numbers & O(1) slider piece attacks
+- FEN Parsing to easily import Position
+
+## Next Step(s):
+- Legal move generation
+- Evaluation function
