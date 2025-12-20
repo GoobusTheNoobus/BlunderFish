@@ -237,11 +237,10 @@ public class Position {
 
         // Sliding Pieces: Magic (not actually magic just a big database) Tables
 
-        int rookIndex = Bitboards.magicHash(occupied & Bitboards.ROOK_MASKS[square], Bitboards.ROOK_MAGIC_NUMBERS[square], Long.bitCount(Bitboards.ROOK_MASKS[square]));
-        int bishopIndex = Bitboards.magicHash(occupied & Bitboards.BISHOP_MASKS[square], Bitboards.BISHOP_MAGIC_NUMBERS[square], Long.bitCount(Bitboards.BISHOP_MASKS[square]));
+    
 
-        long rookAttacks = Bitboards.ROOK_ATTACKS[square][rookIndex];
-        long bishopAttacks = Bitboards.BISHOP_ATTACKS[square][bishopIndex];
+        long rookAttacks = Bitboards.getRookAttack(occupied & Bitboards.ROOK_MASKS[square], square);
+        long bishopAttacks = Bitboards.getBishopAttack(occupied & Bitboards.BISHOP_MASKS[square], square);
 
         if (((rookAttacks & rooks) != 0L) || ((rookAttacks & queens)  != 0L)) {
             return true;
