@@ -1,18 +1,40 @@
 package gen;
 
+
 import java.util.Arrays;
 import board.*;
 import utils.Constants;
 
 
 public class MoveGenerator {
-    public static long[] pseudoLegalMoves = new long[256];
-    public static int pseudoLegalMovesCounter;
-    public static long[] legalMoves = new long[256];
-    public static int legalMovesCounter;
-    
-    public static void generateLegalMoves (Position pos) {
+    // Moves
+    public static long[] pseudoLegalMoves = new long[512];
+    public static long[] legalMoves = new long[512];
 
+    // Counters
+    public static int pseudoLegalMovesCounter;
+    public static int legalMovesCounter;
+
+    private static void appendPseudoLegalMove (long move) {
+        pseudoLegalMoves[pseudoLegalMovesCounter++] = move;
+    }
+
+    /*private static void appendLegalMove (long move) {
+        legalMoves[legalMovesCounter++] = move;
+    }*/
+
+    public static void clearArrays() {
+        Arrays.fill(pseudoLegalMoves, 0L);
+        Arrays.fill(legalMoves, 0);
+
+        pseudoLegalMovesCounter = 0;
+        legalMovesCounter = 0;
+    }
+    public static void generateLegalMoves (Position pos) {
+        generatePseudoLegalMoves(pos);
+        for (int i = 0; i < pseudoLegalMovesCounter; i++) {
+            
+        }
     }
 
     // PSEUDO-LEGAL MOVE GENERATION: CRINGE CODE AHEAD !!!
@@ -24,7 +46,7 @@ public class MoveGenerator {
             while (pieces != 0L) {
                 // Get a pawn
                 int from = Long.numberOfTrailingZeros(pieces);
-                int fromRank = from >> 3;
+                int fromRank = from >>> 3;
                 
 
                 // Single Pawn Push
@@ -33,19 +55,20 @@ public class MoveGenerator {
 
                 if (!isOccupied(pos.occupied, to)) { // Front square isnt occupied 
                     if (fromRank == 6) {
-                        addLongPL(createPromotionMove(pos, from, to, 0));
-                        addLongPL(createPromotionMove(pos, from, to, 1));
-                        addLongPL(createPromotionMove(pos, from, to, 2));
-                        addLongPL(createPromotionMove(pos, from, to, 3));
+                        // Add promotion moves 
+                        appendPseudoLegalMove(createPromotionMove(pos, from, to, 0));
+                        appendPseudoLegalMove(createPromotionMove(pos, from, to, 1));
+                        appendPseudoLegalMove(createPromotionMove(pos, from, to, 2));
+                        appendPseudoLegalMove(createPromotionMove(pos, from, to, 3));
                     } else {
-                        addLongPL(createNormalMove(pos, from, to));
+                        appendPseudoLegalMove(createNormalMove(pos, from, to));
                     }
 
                     // Now for double pawn push
                     if (fromRank == 1) {
                         int doublePushTo = from + 16;
                         if (!isOccupied(pos.occupied, doublePushTo))
-                            addLongPL(createNormalMove(pos, from, doublePushTo));
+                            appendPseudoLegalMove(createNormalMove(pos, from, doublePushTo));
                     }
                     
                 }
@@ -54,14 +77,14 @@ public class MoveGenerator {
                 long capturedBitboard = pos.blackPieces & Bitboards.WHITE_PAWN_ATTACKS[from];
                 while (capturedBitboard != 0L) {
                     int lsb = Long.numberOfTrailingZeros(capturedBitboard);
-                    addLongPL(createNormalMove(pos, from, lsb));
+                    appendPseudoLegalMove(createNormalMove(pos, from, lsb));
                 }
 
                 // Time for EN CROISSANT 🥐
 
                 long enPassantBitboard = 1L << pos.enPassantSquare;
                 if ((enPassantBitboard & Bitboards.WHITE_PAWN_ATTACKS[from]) != 0L) {
-                    addLongPL(createEnPassantMove(pos, from, pos.enPassantSquare));
+                    appendPseudoLegalMove(createEnPassantMove(pos, from, pos.enPassantSquare));
                 }
 
                 pieces &= pieces - 1;
@@ -72,7 +95,7 @@ public class MoveGenerator {
             while (pieces != 0L) {
                 // Get pawn
                 int from = Long.numberOfTrailingZeros(pieces);
-                int fromRank = from >> 3;
+                int fromRank = from >>> 3;
                 
                 // Single Push
 
@@ -80,19 +103,19 @@ public class MoveGenerator {
 
                 if (!isOccupied(pos.occupied, to)) {
                     if (fromRank == 1) { // Promotion
-                        addLongPL(createPromotionMove(pos, from, to, 0));
-                        addLongPL(createPromotionMove(pos, from, to, 1));
-                        addLongPL(createPromotionMove(pos, from, to, 2));
-                        addLongPL(createPromotionMove(pos, from, to, 3));
+                        appendPseudoLegalMove(createPromotionMove(pos, from, to, 0));
+                        appendPseudoLegalMove(createPromotionMove(pos, from, to, 1));
+                        appendPseudoLegalMove(createPromotionMove(pos, from, to, 2));
+                        appendPseudoLegalMove(createPromotionMove(pos, from, to, 3));
                     } else {
-                        addLongPL(createNormalMove(pos, from, to));
+                        appendPseudoLegalMove(createNormalMove(pos, from, to));
                     }
 
                     // Double Push
                     if (fromRank == 6) {
                         int doublePushTo = from - 16;
                         if (!isOccupied(pos.occupied, doublePushTo)) {
-                            addLongPL(createNormalMove(pos, from, doublePushTo));
+                            appendPseudoLegalMove(createNormalMove(pos, from, doublePushTo));
                         }
                     }
                 }
@@ -102,14 +125,14 @@ public class MoveGenerator {
                 long capturedBitboard = pos.whitePieces & Bitboards.BLACK_PAWN_ATTACKS[from];
                 while (capturedBitboard != 0L) {
                     int lsb = Long.numberOfTrailingZeros(capturedBitboard);
-                    addLongPL(createNormalMove(pos, from, lsb));
+                    appendPseudoLegalMove(createNormalMove(pos, from, lsb));
                 }
 
                 // Time for EN CROISSANT 🥐
 
                 long enPassantBitboard = 1L << pos.enPassantSquare;
                 if ((enPassantBitboard & Bitboards.BLACK_PAWN_ATTACKS[from]) != 0L) {
-                    addLongPL(createEnPassantMove(pos, from, pos.enPassantSquare));
+                    appendPseudoLegalMove(createEnPassantMove(pos, from, pos.enPassantSquare));
                 }
 
                 pieces &= pieces - 1;
@@ -133,7 +156,7 @@ public class MoveGenerator {
 
             while (attackBitboard != 0L) {
                 int to = Long.numberOfTrailingZeros(attackBitboard);
-                addLongPL(createNormalMove(pos, from, to));
+                appendPseudoLegalMove(createNormalMove(pos, from, to));
                 attackBitboard &= attackBitboard - 1;
             }
 
@@ -153,7 +176,7 @@ public class MoveGenerator {
 
             while (attackBitboard != 0L) {
                 int to = Long.numberOfTrailingZeros(attackBitboard);
-                addLongPL(createNormalMove(pos, from, to));
+                appendPseudoLegalMove(createNormalMove(pos, from, to));
                 attackBitboard &= attackBitboard - 1;
             }
 
@@ -168,12 +191,11 @@ public class MoveGenerator {
 
         while (pieces != 0L) {
             int from = Long.numberOfTrailingZeros(pieces);
-            int index = Bitboards.magicHash(pos.occupied & Bitboards.ROOK_MASKS[from], Bitboards.ROOK_MAGIC_NUMBERS[from], Long.bitCount(Bitboards.ROOK_MASKS[from]));
-            long attackBitboard = Bitboards.ROOK_ATTACKS[from][index] & ~friendlies;
-
+    
+            long attackBitboard = Bitboards.getRookAttack(pos.occupied, from) & ~friendlies;
             while (attackBitboard != 0L) {
                 int to = Long.numberOfTrailingZeros(attackBitboard);
-                addLongPL(createNormalMove(pos, from, to));
+                appendPseudoLegalMove(createNormalMove(pos, from, to));
                 attackBitboard &= attackBitboard - 1;
             }
             pieces &= pieces - 1;
@@ -186,14 +208,11 @@ public class MoveGenerator {
 
         while (pieces != 0L) {
             int from = Long.numberOfTrailingZeros(pieces);
-            int index = Bitboards.magicHash(pos.occupied & Bitboards.BISHOP_MASKS[from], Bitboards.BISHOP_MAGIC_NUMBERS[from], Long.bitCount(Bitboards.BISHOP_MASKS[from]));
-            long attackBitboard = Bitboards.BISHOP_ATTACKS[from][index] & ~friendlies;
-
-            System.out.println("Bishop at square: " + from);
+            long attackBitboard = Bitboards.getBishopAttack(pos.occupied, from) & ~friendlies;
 
             while (attackBitboard != 0L) {
                 int to = Long.numberOfTrailingZeros(attackBitboard);
-                addLongPL(createNormalMove(pos, from, to));
+                appendPseudoLegalMove(createNormalMove(pos, from, to));
                 attackBitboard &= attackBitboard - 1;
             }
             pieces &= pieces - 1;
@@ -206,21 +225,19 @@ public class MoveGenerator {
 
         while (pieces != 0L) {
             int from = Long.numberOfTrailingZeros(pieces);
-            int rookIndex = Bitboards.magicHash(pos.occupied & Bitboards.ROOK_MASKS[from], Bitboards.ROOK_MAGIC_NUMBERS[from], Long.bitCount(Bitboards.ROOK_MASKS[from]));
-            int bishopIndex = Bitboards.magicHash(pos.occupied & Bitboards.BISHOP_MASKS[from], Bitboards.BISHOP_MAGIC_NUMBERS[from], Long.bitCount(Bitboards.BISHOP_MASKS[from]));
 
-            long attackBitboard = (Bitboards.BISHOP_ATTACKS[from][bishopIndex] | Bitboards.ROOK_ATTACKS[from][rookIndex]) & ~friendlies;
+            long attackBitboard = (Bitboards.getBishopAttack(pos.occupied, from) | Bitboards.getRookAttack(pos.occupied, from)) & ~friendlies;
 
             while (attackBitboard != 0L) {
                 int to = Long.numberOfTrailingZeros(attackBitboard);
-                addLongPL(createNormalMove(pos, from, to));
+                appendPseudoLegalMove(createNormalMove(pos, from, to));
                 attackBitboard &= attackBitboard - 1;
             }
             pieces &= pieces - 1;
         }
     }
 
-    public static void generatePsuedoLegalMoves (Position pos) {
+    public static void generatePseudoLegalMoves (Position pos) {
         if (pos.whiteToMove) {
             generatePawnMoves(pos, true);
             generateBishopMoves(pos, true);
@@ -238,8 +255,10 @@ public class MoveGenerator {
             generateQueenMoves(pos, false);
             generateKingMoves(pos, false);
         }
-    }
 
+    }
+    
+    
     
 
     private static boolean isOccupied (long occupiedBoard, int square) {
@@ -249,6 +268,7 @@ public class MoveGenerator {
         } return false;
     }
     
+    /* Helper Functions for creating and formatting move binary */
     private static long createNormalMove (Position pos, int from, int to) {
         int pieceMoved = Math.abs(pos.pieceAt(from));
         int pieceCaptured = Math.abs(pos.pieceAt(to));
@@ -332,44 +352,14 @@ public class MoveGenerator {
             pos.enPassantSquare);
         return move;
     }
-
-    private static void addLongPL (long schlong) {
-        pseudoLegalMoves[pseudoLegalMovesCounter] = schlong;
-        pseudoLegalMovesCounter ++;
-    }
-
-    private static void addLongL (long schlong) {
-        legalMoves[legalMovesCounter] = schlong;
-        legalMovesCounter ++;
-    }
-
-    public static void clearArrays () {
-        Arrays.fill(pseudoLegalMoves, 0L);
-        pseudoLegalMovesCounter = 0;
-        Arrays.fill(legalMoves, 0L);
-        legalMovesCounter = 0;
-    }
-
-    
     
     public static void printMoveList () {
-        // 64-bit move encoding:
-    // Bits 0-5:   from square (0-63)
-    // Bits 6-11:  to square (0-63)
-    // Bits 12-14: moving piece type (1-6: P, N, B, R, Q, K)
-    // Bits 15-17: captured piece type (1-6, 0 = none)
-    // Bits 18-20: promotion piece (0-3: N, B, R, Q)
-    // Bit 21:     capture flag
-    // Bit 22:     double pawn push flag
-    // Bit 23:     en passant flag
-    // Bit 24:     castling flag
-    // Bit 25:     promotion flag
-    // Bits 26-29: castle rights before move (2 bits each side)
-    // Bits 30-35: en passant square before move (0-63, 63 = none)
     
         for (int i = 0; i < pseudoLegalMovesCounter; i ++) {
             System.out.println(Move.toString(pseudoLegalMoves[i]));
+            
         }
+        System.out.printf("There are %d moves in PseudoLegalMove", pseudoLegalMovesCounter);
     }
 
 } 
