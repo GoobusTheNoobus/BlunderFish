@@ -1,6 +1,5 @@
 package board;
 
-
 public class Bitboards {
     public static final long A_FILE = 0x0101010101010101L;
     public static final long B_FILE = A_FILE << 1;
@@ -32,137 +31,137 @@ public class Bitboards {
     public static final long[][] BISHOP_ATTACKS = new long[64][];
 
     public static final long[] ROOK_MAGIC_NUMBERS = {
-        0x4080002088104000L,
-        0x40C0002004100040L,
-        0x8080082000801000L,
-        0x0180080010008095L,
-        0x0300030004904800L,
-        0x1100040012288300L,
-        0x2A00008804020041L,
-        0x1600102480410204L,
-        0x9820800084204006L,
-        0x0284400020100044L,
-        0x1101802006100080L,
-        0x4000801000080080L,
-        0x0100800800801400L,
-        0x2003000822840100L,
-        0x0000800900802200L,
-        0x404300004500008AL,
-        0xA207818000294000L,
-        0x0C40008042A0018AL,
-        0x0220808020081002L,
-        0x2088018008809002L,
-        0x3020818004000800L,
-        0x008880800C004200L,
-        0x0020040010118812L,
-        0x3420520001008154L,
-        0xA8014000800A8022L,
-        0x0410200040100240L,
-        0x2D40100080200080L,
-        0x0602003A00504020L,
-        0x2001001100080004L,
-        0x4002008200300804L,
-        0x0005006100220004L,
-        0x000040420000810CL,
-        0x002C804009800024L,
-        0x8218804003002100L,
-        0x4202048042001020L,
-        0x9002005022000A41L,
-        0x0100800800801400L,
-        0x01020050420004A8L,
-        0x0000800900802200L,
-        0x0402310082000144L,
-        0x0408294008808000L,
-        0x0710024460014000L,
-        0x1020001008004040L,
-        0x0102400A02A20010L,
-        0x29A2002008920004L,
-        0x21C2008004008100L,
-        0x82B10A1851440010L,
-        0x1880804084020001L,
-        0x0411402580050100L,
-        0x0043C00820009080L,
-        0x8420084011006100L,
-        0x00010900E0100100L,
-        0x2003004802100500L,
-        0x0C10106040044801L,
-        0x0042880250014400L,
-        0x2090012094004200L,
-        0x1011801201004022L,
-        0x1011801201004022L,
-        0x0001084500102001L,
-        0x0001003000208429L,
-        0x002200041048600AL,
-        0x0301000812040001L,
-        0x0004021008451484L,
-        0x04102C0180502502L
+        0x2080031423804000L,
+        0x4040062000401002L,
+        0x2A8009E000300080L,
+        0x8100043001002148L,
+        0x8200102200082004L,
+        0x8A00070408420090L,
+        0xA400228110180402L,
+        0x8A00082040830C02L,
+        0x4080800080400A6CL,
+        0x321040004C201003L,
+        0x2120801009806000L,
+        0x92C2002200584130L,
+        0xC350802802801C00L,
+        0x1100800601440080L,
+        0x4A01001300220004L,
+        0xC0C2000282086401L,
+        0x0100818006400428L,
+        0x03B4808040002004L,
+        0x21018080100AA001L,
+        0x84010A0020413200L,
+        0x80E0310025002800L,
+        0x026101000400B806L,
+        0x6C00840012100318L,
+        0x0C4002000910864CL,
+        0x00400245800180E5L,
+        0x11AAD0044001A000L,
+        0x00003101002002C2L,
+        0x491B00210010011AL,
+        0xB412010600085060L,
+        0xC40A000E00900408L,
+        0x0408101400121843L,
+        0xF180110200185884L,
+        0x2840004280801064L,
+        0x2A61610483004001L,
+        0x000A0010C2002181L,
+        0x00B04A3001002100L,
+        0x0042D81E0E001200L,
+        0x1002005002000408L,
+        0x4030211004004258L,
+        0x50080401EA000081L,
+        0x10C0C00080008021L,
+        0x0A38810202220041L,
+        0x800E015020820040L,
+        0x8100A21842020010L,
+        0x0822011004620008L,
+        0x00060024B0120018L,
+        0x4218120810240027L,
+        0xA881088112C2000CL,
+        0x800A008443350200L,
+        0x800423884D020200L,
+        0x224022811A004200L,
+        0x40004201A2281200L,
+        0x042800A400800980L,
+        0x4B62001890844200L,
+        0x11501008218A3C00L,
+        0x3010231280440200L,
+        0x44484A0011012182L,
+        0x04410C4000128021L,
+        0x18005142002080AAL,
+        0x442A900121001805L,
+        0x0A8600288C102112L,
+        0x02B6000130881402L,
+        0x2A05018310060824L,
+        0x408044004281EF06L,
     };
 
     public static final long[] BISHOP_MAGIC_NUMBERS = {
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L,
-        0xA010200004000000L
+        0x0022101050818080L,
+        0x00A0084508608128L,
+        0x40D0810A00204000L,
+        0x0024440080000040L,
+        0x4042021000000000L,
+        0x100A020222040000L,
+        0x0809450828400200L,
+        0x0410104410084800L,
+        0x0000082128020040L,
+        0x640820280A004A41L,
+        0xA09410448C810000L,
+        0x8008542400900000L,
+        0x00040450C0181000L,
+        0x8000020844042189L,
+        0x0808048090101201L,
+        0x0001304042282040L,
+        0x0250310410320820L,
+        0x0202105144180080L,
+        0x0000404880408020L,
+        0x000C040801202400L,
+        0x3111001820082000L,
+        0x100100080C02020AL,
+        0x1500400101282010L,
+        0x1202102A49040500L,
+        0x090D40004C100C00L,
+        0x4010840208080080L,
+        0x0104020001180104L,
+        0x0C00080884004808L,
+        0x0281080401004004L,
+        0x0410018083024100L,
+        0x008404000086191AL,
+        0x1000408000440C40L,
+        0x0488210405100400L,
+        0x0488210405100400L,
+        0xE852211004010C00L,
+        0x5000040401080120L,
+        0x010004A080104084L,
+        0x6090064601284100L,
+        0x4004040C22008080L,
+        0x02280A0030088882L,
+        0x0001101004251103L,
+        0x110C2104020A1004L,
+        0x000020940A101000L,
+        0x7000222018003100L,
+        0x1048400093000204L,
+        0x40001A0380200100L,
+        0x0044010811020A00L,
+        0x1902208112089D00L,
+        0x0809450828400200L,
+        0x610047008820084CL,
+        0x0010131401040012L,
+        0x0005000020880C00L,
+        0x0100105202020900L,
+        0x2012400508022011L,
+        0x002204015801000AL,
+        0x00A0084508608128L,
+        0x0410104410084800L,
+        0x0001304042282040L,
+        0x0488001022011000L,
+        0x120C408C0A150401L,
+        0x0288000004504400L,
+        0x0284200404080208L,
+        0x0000082128020040L,
+        0x0022101050818080L
     };
 
     public static final int[] RELEVANT_ROOK_BITS = {
@@ -187,55 +186,17 @@ public class Bitboards {
         6, 5, 5, 5, 5, 5, 5, 6
     };
     
-
-    public static void initalizeKnightTable() {
-        int[][] knightDirections = {{1, 2}, {1, -2}, {-1, 2}, {-1, -2}, {2, 1}, {2, -1}, {-2, 1}, {-2, -1}};
-        for (int i = 0; i < 64; i ++) {
-            long schlong = 0L;
-            for (int[] knightDir : knightDirections) {
-                int x = (i >> 3) + knightDir[0];
-                int y = (i & 7) + knightDir[1];
-
-                if (x < 0 || x > 7 || y < 0 || y > 7) {
-                    continue;
-                }
-
-                int square = x << 3 | y;
-
-                schlong |= 1L << square;
-
-            }
-            KNIGHT_ATTACKS[i] = schlong;
-        }
-    }
-
-    public static void initalizeKingTable() {
-        int[][] kingDirections = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
-        for (int i = 0; i < 64; i ++) {
-            long schlong = 0L;
-            for (int[] kingDir : kingDirections) {
-                int x = (i >> 3) + kingDir[0];
-                int y = (i & 7) + kingDir[1];
-
-                if (x < 0 || x > 7 || y < 0 || y > 7) {
-                    continue;
-                }
-
-                int square = x << 3 | y;
-
-                schlong |= 1L << square;
-
-            }
-            KING_ATTACKS[i] = schlong;
-        }
-    }
-
     public static void intializePawnAttackTables() {
+        // Precompute Pawn Attacks (Not moves, just captures)
         int[][] whitePawnAttacks = {{1, 1}, {1, -1}};
         int[][] blackPawnAttacks = {{-1, 1}, {-1, -1}};
+
+        // iterate squares
         for (int i = 0; i < 64; i ++) {
-            long schlong1 = 0L;
-            long schlong2 = 0L;
+
+            long whitePawnMask = 0L;
+            long blackPawnMask = 0L;
+
             for (int[] whitePawnAttack : whitePawnAttacks) {
                 int x = (i >> 3) + whitePawnAttack[0];
                 int y = (i & 7) + whitePawnAttack[1];
@@ -246,7 +207,7 @@ public class Bitboards {
 
                 int square = x << 3 | y;
 
-                schlong1 |= 1L << square;
+                whitePawnMask |= 1L << square;
 
             }
             for (int[] blackPawnAttack: blackPawnAttacks) {
@@ -259,183 +220,273 @@ public class Bitboards {
 
                 int square = x << 3 | y;
 
-                schlong2 |= 1L << square;
+                blackPawnMask |= 1L << square;
             } 
 
-            WHITE_PAWN_ATTACKS[i] = schlong1;
-            BLACK_PAWN_ATTACKS[i] = schlong2;
+            // Append to the attacks
+            WHITE_PAWN_ATTACKS[i] = whitePawnMask;
+            BLACK_PAWN_ATTACKS[i] = blackPawnMask;
         }
         
         
     }
 
+    public static void initalizeKnightTable() {
+        int[][] knightDirections = {{1, 2}, {1, -2}, {-1, 2}, {-1, -2}, {2, 1}, {2, -1}, {-2, 1}, {-2, -1}}; // Knight Attacks
 
+        for (int i = 0; i < 64; i ++) {
+            // Init Mask
+            long mask = 0L;
 
-    private static long generateRookAttack(int square, long occupied) {
-        long mask = 0L;
-        int rank = square >> 3;
-        int file = square & 7;
+            // Iterate through each direction
+            for (int[] knightDir : knightDirections) {
+                int x = (i >> 3) + knightDir[0];
+                int y = (i & 7) + knightDir[1];
 
-        int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-
-        for (int[] dir: directions) {
-
-            for (int j = 1; j < 8; j ++) {
-                int newr = rank + j * dir[0];
-                int newf = file + j * dir[1];
-
-                if (newf > 7 || newf < 0 || newr > 7 || newr < 0) {
-                    break;
+                if (x < 0 || x > 7 || y < 0 || y > 7) {
+                    continue;
                 }
 
-                if (((1L << ((newr << 3) | newf)) & occupied) != 0L) {
-                    mask |= 1L << ((newr << 3) | newf);
-                    break;
-                }
+                int square = x << 3 | y;
 
-                    // SIX SEVEN
-                mask |= 1L << ((newr << 3) | newf);
+                mask |= 1L << square;
 
             }
+            // Append to array
+            KNIGHT_ATTACKS[i] = mask;
         }
+    }
+
+    public static void initalizeKingTable() {
+        int[][] kingDirections = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+        for (int i = 0; i < 64; i ++) {
+            long mask = 0L;
+
+            // Iterate direction
+            for (int[] kingDir : kingDirections) {
+                int x = (i >> 3) + kingDir[0];
+                int y = (i & 7) + kingDir[1];
+
+                if (x < 0 || x > 7 || y < 0 || y > 7) {
+                    continue;
+                }
+
+                int square = x << 3 | y;
+
+                mask |= 1L << square;
+
+            }
+            // Append to array
+            KING_ATTACKS[i] = mask;
+        }
+    }
+
+    public static long generateRookAttacksPerSquare (int square, long blockers) {
+        // Generate Rook Attacks for square and given blockers
+        long mask = 0L;
+
+        // Parse Rank and File 
+        int rank = square / 8;
+        int file = square % 8;
+
+        // Iterate in each direction
+        for (int newRank = rank + 1; newRank <= 7; newRank++){ // Upwards
+            long newSquareMask = 1L << (newRank * 8 + file);
+            if ((newSquareMask & blockers) != 0L) { // Square is blocked
+                mask |= newSquareMask; 
+                break;
+            }
+            mask |= newSquareMask; 
+        } 
+
+        for (int newRank = rank - 1; newRank >= 0; newRank--){ // Downwards
+            long newSquareMask = 1L << (newRank * 8 + file);
+            if ((newSquareMask & blockers) != 0L) { // Square is blocked
+                mask |= newSquareMask; 
+                break;
+            }
+            mask |= newSquareMask; 
+        }
+
+        for (int newFile = file + 1; newFile <= 7; newFile++) { // Right
+            long newSquareMask = 1L << (rank * 8 + newFile);
+            if ((newSquareMask & blockers) != 0L) { // Square is blocked
+                mask |= newSquareMask; 
+                break;
+            }
+            mask |= newSquareMask; 
+        } 
+        for (int newFile = file - 1; newFile >= 0; newFile--){ // Left
+            long newSquareMask = 1L << (rank * 8 + newFile);
+            if ((newSquareMask & blockers) != 0L) { // Square is blocked
+                mask |= newSquareMask; 
+                break;
+            }
+            mask |= newSquareMask;
+        } 
 
         return mask;
     }
 
-    private static long generateBishopAttack(int square, long occupied) {
-        int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+    public static long generateBishopAttacksPerSquare (int square, long blockers) {
+        // Generate Bishop Attacks for square and given blockers
+        long mask = 0L;
 
-        long attacks = 0;
+        // Parse Rank and File 
+        int rank = square / 8;
+        int file = square % 8;
 
-        int r = square >>> 3;
-        int f = square & 7;
+        // Iterate
+        for (int newRank = rank + 1, newFile = file + 1; newRank <= 7 && newFile <= 7; newRank++, newFile++){
+            long newSquareMask = 1L << (newRank * 8 + newFile);
+            if ((newSquareMask & blockers) != 0L) { // Square is blocked
 
-        for (int[] dir: directions) {
-
-            for (int i = 1; i < 8; i ++) {
-                int newr = r + dir[0] * i;
-                int newf = f + dir[1] * i;
-
-                if (newr < 0 || newr > 7 || newf < 0 || newf > 7) {
-                    break;
-                }
-
-                int newSquare = newr << 3 | newf;
-                long newSquareMask = 1L << newSquare;
-
-                if ((occupied & newSquareMask) != 0L) {
-                    attacks |= newSquareMask;
-                    break;
-                }
-
-                attacks |= newSquareMask;
-
-                
+                mask |= newSquareMask; 
+                break;
             }
+            mask |= newSquareMask; 
         }
-        return attacks;
-    }
 
-    private static void generateBishopAttacks() {
-        for (int i = 0; i < 64; i ++) {
-            BISHOP_ATTACKS[i] = new long[1 << RELEVANT_BISHOP_BITS[i]];
-
-            for (int j = 0; j < (1 << RELEVANT_BISHOP_BITS[i]); j++) {
-                long blockers = indexToBlockers(j, BISHOP_MASKS[i]);
-
-                BISHOP_ATTACKS[i][j] = generateBishopAttack(i, blockers);
+        for (int newRank = rank + 1, newFile = file - 1; newRank <= 7 && newFile >= 0; newRank++, newFile--){
+            long newSquareMask = 1L << (newRank * 8 + newFile);
+            if ((newSquareMask & blockers) != 0L) { // Square is blocked
+                mask |= newSquareMask; 
+                break;
             }
+            mask |= newSquareMask; 
         }
-    }
 
-    private static void generateRookAttacks() {
-        for (int i = 0; i < 64; i ++) {
-
-            ROOK_ATTACKS[i] = new long[1 << RELEVANT_ROOK_BITS[i]];
-
-            for (int j = 0; j < (1 << RELEVANT_ROOK_BITS[i]); j++) {
-                long blockers = indexToBlockers(j, ROOK_MASKS[i]);
-
-                ROOK_ATTACKS[i][j] = generateRookAttack(i, blockers);
+        for (int newRank = rank - 1, newFile = file + 1; newRank >= 0 && newFile <= 7; newRank--, newFile++){
+            long newSquareMask = 1L << (newRank * 8 + newFile);
+            if ((newSquareMask & blockers) != 0L) { // Square is blocked
+                mask |= newSquareMask; 
+                break;
             }
+            mask |= newSquareMask; 
         }
+
+        for (int newRank = rank - 1, newFile = file - 1; newRank >= 0 && newFile >= 0; newFile--, newRank--){
+            long newSquareMask = 1L << (newRank * 8 + newFile);
+            if ((newSquareMask & blockers) != 0L) { // Square is blocked
+                mask |= newSquareMask; 
+                break;
+            }
+            mask |= newSquareMask; 
+        }
+        return mask;
     }
+    
+    
 
-
-    private static long indexToBlockers (int index, long mask) {
+    public static long indexToBlockers(int index, long mask) {
         long blockers = 0L;
         int bitPos = 0;
 
         while (mask != 0) {
-            int square = Long.numberOfTrailingZeros(mask);
-            mask &= mask - 1;
+            long lsb = mask & -mask;   // lowest set bit in mask
+            mask ^= lsb;
 
             if ((index & (1 << bitPos)) != 0) {
-                blockers |= 1L << square;
+                blockers |= lsb;
             }
 
-            bitPos ++;
+            bitPos++;
         }
 
         return blockers;
     }
 
 
-    private static void generateBishopMasks() {
-        for (int i = 0; i < 64; i++) {
+    public static void initalizeSliderAttacks () {
+        // Iterate through each square
+
+        for (int square = 0; square < 64; square++) {
+            /* ATTACK MASKS */
+            // Generate Rook Mask for square
             long mask = 0L;
-            int rank = i >> 3;
-            int file = i & 7;
 
-            int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+            // Parse Rank and File 
+            int rank = square / 8;
+            int file = square % 8;
 
-            for (int[] dir: directions) {
-                int r = rank + dir[0];
-                int f = file + dir[1];
+            // Iterate in each direction
+            for (int newRank = rank + 1; newRank <= 6; newRank++) mask |= 1L << (newRank * 8 + file); // Upwards
+            for (int newRank = rank - 1; newRank >= 1; newRank--) mask |= 1L << (newRank * 8 + file); // Downwards
+            for (int newFile = file + 1; newFile <= 6; newFile++) mask |= 1L << (rank * 8 + newFile); // Right
+            for (int newFile = file - 1; newFile >= 1; newFile--) mask |= 1L << (rank * 8 + newFile); // Left
 
-                while (r > 0 && r < 7 && f > 0 && f < 7) {
-                    mask |= (1L << (r * 8 + f));
-                    r += dir[0];
-                    f += dir[1];
-                }
+            // Put it into ROOK_MASK
+            ROOK_MASKS[square] = mask;
+
+
+            // Generate bishop mask (should be same logic as rook)
+
+            mask = 0L;
+
+
+            // Iterate
+            for (int newRank = rank + 1, newFile = file + 1; newRank <= 6 && newFile <= 6; newRank++, newFile++)    mask |= 1L << (newRank * 8 + newFile); // NE
+
+            for (int newRank = rank + 1, newFile = file - 1; newRank <= 6 && newFile >= 1; newRank++, newFile--) mask |= 1L << (newRank * 8 + newFile); // NW
+
+            for (int newRank = rank - 1, newFile = file + 1; newRank >= 1 && newFile <= 6; newRank--, newFile++) mask |= 1L << (newRank * 8 + newFile); // SE
+
+            for (int newRank = rank - 1, newFile = file - 1; newRank >= 1 && newFile >= 1; newRank--, newFile--) mask |= 1L << (newRank * 8 + newFile); // SW
+
+            // Put it into BISHOP_MASKS
+            BISHOP_MASKS[square] = mask;
+
+
+
+
+            // Initialize the arrays for the square
+            // The size is always 2 ^ relevant_bits
+
+            BISHOP_ATTACKS[square] = new long[1 << RELEVANT_BISHOP_BITS[square]];
+            ROOK_ATTACKS[square] = new long[1 << RELEVANT_ROOK_BITS[square]];
+
+            // Do bishop stuff
+            for (int index = 0; index < (1 << RELEVANT_BISHOP_BITS[square]); index++) {
+                long blockers = indexToBlockers(index, BISHOP_MASKS[square]);
+
+
+                BISHOP_ATTACKS[square][hash(blockers, square, false)] = generateBishopAttacksPerSquare(square, blockers);
             }
 
-            BISHOP_MASKS[i] = mask;
+            // Do rook stuff
+
+            for (int index = 0; index < (1 << RELEVANT_ROOK_BITS[square]); index++) {
+                long blockers = indexToBlockers(index, ROOK_MASKS[square]);
+
+                ROOK_ATTACKS[square][hash(blockers, square, true)] = generateRookAttacksPerSquare(square, blockers);
+            }
         }
     }
 
-    private static void generateRookMasks() {
-        for (int i = 0; i < 64; i ++) {
-            long mask = 0L;
-            int rank = i >> 3;
-            int file = i & 7;
-
-            int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-
-            for (int[] dir: directions) {
-
-                for (int j = 1; j < 8; j ++) {
-                    int newr = rank + j * dir[0];
-                    int newf = file + j * dir[1];
-
-                    int nextr = newr + dir[0];
-                    int nextf = newf + dir[1];
-
-                    if (nextf > 7 || nextf < 0 || nextr > 7 || nextr < 0) {
-                        break;
-                    }
-
-                    // SIX SEVEN
-                    mask |= 1L << ((newr << 3) | newf);
-
-                }
-            }
-
-            ROOK_MASKS[i] = mask;
-        }
+    public static long getBishopAttack(long occupied, int square) { 
+        // Time for some MAGIC
+        return BISHOP_ATTACKS[square][hash(occupied & BISHOP_MASKS[square], square, false)];
     }
 
-    // Helper: prints a bitboard as a visual 8x8 board
+    public static long getRookAttack(long occupied, int square) {
+        return ROOK_ATTACKS[square][hash(occupied & ROOK_MASKS[square], square, true)];
+    }
+
+    public static int hash(long blockers, int square, boolean isRook) {
+        blockers &= isRook ? ROOK_MASKS[square] : BISHOP_MASKS[square];
+        blockers *= isRook ? ROOK_MAGIC_NUMBERS[square] : BISHOP_MAGIC_NUMBERS[square];
+        blockers >>>= isRook ? 64 - RELEVANT_ROOK_BITS[square] : 64 - RELEVANT_BISHOP_BITS[square];
+        return ((int)blockers);
+    }
+
+    public static void init() {
+        initalizeKingTable();
+        initalizeKnightTable();
+        intializePawnAttackTables();
+        initalizeSliderAttacks();
+    }
+
+    /* ##### HELPER FUNCTIONS ##### */
 
     public static void printBitboard(long bb) {
         for (int rank = 7; rank >= 0; rank--) {
@@ -452,25 +503,95 @@ public class Bitboards {
 
         System.out.println("  a b c d e f g h\n");
     }
+    
+    public static void detectBishopMagicCollisions(int square) {
+        long mask = BISHOP_MASKS[square];
+        int bits = RELEVANT_BISHOP_BITS[square];
+        int size = 1 << bits;
 
-    public static int magicHash(long blockers, long magic, int relevantBits) {
-        return (int)((blockers * magic) >>> (64 - relevantBits));
+        long[] usedAttacks = new long[size];
+        long[] usedBlockers = new long[size];
+        boolean[] used = new boolean[size];
+
+        System.out.println("Testing bishop magic collisions on square " + square);
+
+        for (int index = 0; index < size; index++) {
+            long blockers = indexToBlockers(index, mask);
+
+            int hash = hash(blockers, square, false);
+            long attacks = generateBishopAttacksPerSquare(square, blockers);
+
+            if (!used[hash]) {
+                used[hash] = true;
+                usedAttacks[hash] = attacks;
+                usedBlockers[hash] = blockers;
+            } else {
+                if (usedAttacks[hash] != attacks) {
+                    System.out.println("MAGIC COLLISION FOUND");
+                    System.out.println("Square: " + square);
+                    System.out.println("Hash index: " + hash);
+
+                    System.out.println("Blockers A:");
+                    printBitboard(usedBlockers[hash]);
+                    System.out.println("Attacks A:");
+                    printBitboard(usedAttacks[hash]);
+
+                    System.out.println("Blockers B:");
+                    printBitboard(blockers);
+                    System.out.println("Attacks B:");
+                    printBitboard(attacks);
+                    return;
+                }
+            }
+        }
+
+        System.out.println("No bishop magic collisions on square " + square);
+    }
+    public static void detectRookMagicCollisions(int square) {
+        long mask = ROOK_MASKS[square];
+        int bits = RELEVANT_ROOK_BITS[square];
+        int size = 1 << bits;
+
+        long[] usedAttacks = new long[size];
+        long[] usedBlockers = new long[size];
+        boolean[] used = new boolean[size];
+
+        System.out.println("Testing rook magic collisions on square " + square);
+
+        for (int index = 0; index < size; index++) {
+            long blockers = indexToBlockers(index, mask);
+
+            int hash = hash(blockers, square, true);
+            long attacks = generateRookAttacksPerSquare(square, blockers);
+
+            if (!used[hash]) {
+                used[hash] = true;
+                usedAttacks[hash] = attacks;
+                usedBlockers[hash] = blockers;
+            } else {
+                if (usedAttacks[hash] != attacks) {
+                    System.out.println("MAGIC COLLISION FOUND");
+                    System.out.println("Square: " + square);
+                    System.out.println("Hash index: " + hash);
+
+                    System.out.println("Blockers A:");
+                    printBitboard(usedBlockers[hash]);
+                    System.out.println("Attacks A:");
+                    printBitboard(usedAttacks[hash]);
+
+                    System.out.println("Blockers B:");
+                    printBitboard(blockers);
+                    System.out.println("Attacks B:");
+                    printBitboard(attacks);
+                    return;
+                }
+            }
+        }
+
+        System.out.println("No rook magic collisions on square " + square);
     }
 
+    
 
-    public static void init() {
-        initalizeKingTable();
-        initalizeKnightTable();
-        intializePawnAttackTables();
-        generateBishopMasks();
-        generateRookMasks();
-        generateBishopAttacks();
-        generateRookAttacks();
-    }
 
-    public static void main(String[] args) {
-        init();
-        printBitboard(indexToBlockers(1, ROOK_MASKS[0]));
-        printBitboard(ROOK_ATTACKS[0][1]);
-    }
-}
+}   
