@@ -1,5 +1,6 @@
-package utils;
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
 
+package utils;
 
 public class Utility {
     public static int getSquareIntFromString (String squareString) {
@@ -21,7 +22,18 @@ public class Utility {
 
         return "" + f + r;
     }
+    
+    public static int parseRank (int square) {
+        return square >> 3;
+    }
 
+    public static int parseFile (int square) {
+        return square & 7;
+    }
+
+    public static int parseSquare (int rank, int file) {
+        return (rank << 3) | file;
+    }
     
     
 }

@@ -1,6 +1,4 @@
-// The Mailbox index is the piece constant - 1 as of right now. So to edit Piece.WB's bitboard, do bitboards[Piece.WB - 1]
-
-
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
 
 package board;
 
@@ -10,28 +8,47 @@ import java.util.Arrays;
 import gen.Move;
 import utils.Utility;
 import utils.Constants;
+import utils.Timer;
+
+/**
+ * Represents a chess position with board state, move number, and a move history "stack"
+ * Uses both bitboard and mailbox representations for efficiency and speed
+ * The bitboard index is the same as the piece constant (White Pawn's bitboard is bitboards[Piece.WP])
+ */
 
 
 public class Position {
+    // Move history for undoing moves
     public ArrayDeque<Long> moveHistory = new ArrayDeque<>();
 
+    // Bitboards for each type of pieces, bitboards[0] is empty
     public long[] bitboards = new long[13];
 
+    // Mailbox array for piece lookup
     public int[] mailbox = new int[64];
 
+    // Other bitboards for efficiency and checking for friendly and enemy captures
     public long whitePieces;
     public long blackPieces;
     public long occupied;
 
+    // Side to move
     public boolean whiteToMove;
 
-    public int castlingRights; // Bit 0: KW | Bit 1: QW | Bit 2: KB | Bit 3: QB
+     // Bit 0: KingsideW | Bit 1: QueensideW | Bit 2: KingsideB | Bit 3: QueensideB
+    public int castlingRights;
+
+    // En passant target square 0-63, 64 = No Square
     public int enPassantSquare;
 
+    // Fifty Move Clock
     public int fiftyMoveClock;
 
-    public int moveNumber;
-
+    /**
+     * Loads a position from a FEN string
+     * Note that invalid positions will still be accepted
+     * @param fen is the FEN string or null for starting position
+     */
     public Position(String fen) {
         if (fen.isEmpty() || fen == null) {
             loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -44,11 +61,12 @@ public class Position {
         loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
-
+    // Load FEN function
     public void loadFEN (String fen) {
-
-        Arrays.fill(mailbox, Piece.NONE); // Just in case NONE changes to something else
+        // Just in case I change Piece.NONE constant to something other than 0
+        Arrays.fill(mailbox, Piece.NONE);
         
+        // Make sure all bitboards are empty for safety measure
         for (int i = 0; i < 13; i ++) {
             bitboards[i] = 0L;
         }
@@ -56,20 +74,23 @@ public class Position {
         String[] parts = fen.split(" ");
 
         // Handling Board
-
         String boardPart = parts[0];
         int pointer = 56;
         for (char car: boardPart.toCharArray()) {
+            // Next rank
             if (car == '/')
                 pointer = pointer - 16;
 
-            
+            // If its a number, create that many empty spaces
             else if (Character.isDigit(car)) {
                 pointer = pointer + (car - '0');
             }
+
+            // Load a piece
             else {
                 long mask = 1L << pointer;
 
+                // Do NOT question the naming, it is for the greater good 
                 switch (car) {
                     case 'P':
                         bitboards[Piece.WP] |= mask;
@@ -139,7 +160,7 @@ public class Position {
                 this.whiteToMove = false;
                 break;
             default:
-                throw new IllegalArgumentException("Invalid FEN character in side to move field");
+                throw new IllegalArgumentException("Invalid FEN character in side to move field: " + parts[1]);
         }
 
         // Castling
@@ -169,6 +190,7 @@ public class Position {
 
         String enPassantPart = parts[3];
 
+        
         if (enPassantPart.equals("-")) {
             enPassantSquare = 64;
         } else {
@@ -178,7 +200,7 @@ public class Position {
         // 50 Move Clock
         fiftyMoveClock = Integer.parseInt(parts[4]);
 
-        moveNumber = Integer.parseInt(parts[5]);
+        
     }
 
     public int pieceAt(int square) {
@@ -211,9 +233,6 @@ public class Position {
         if ((Bitboards.KING_ATTACKS[square] & king) != 0) return true;
 
         // Sliding Pieces: Magic (not actually magic just a big database) Tables
-
-    
-
         long rookAttacks = Bitboards.getRookAttack(occupied & Bitboards.ROOK_MASKS[square], square);
         long bishopAttacks = Bitboards.getBishopAttack(occupied & Bitboards.BISHOP_MASKS[square], square);
 
@@ -281,9 +300,8 @@ public class Position {
 
     public void makeMove (long move) {
 
-        // Push it into the stack (technically a dequeArray v)
+        // Push it into the stack (technically a dequeArray :D)
         moveHistory.push(move);
-
 
         boolean isCastling = Move.getCastlingFlag(move);
         boolean isEnPassant = Move.getEnPassantFlag(move);
@@ -292,18 +310,16 @@ public class Position {
         int pieceMoved = Move.getMovedPiece(move);
         int promotionPiece =  Move.getPromotionPiece(move);
 
-        assert mailbox[from] == pieceMoved;
-    
-
-        System.out.println("From square: " + from);
-        System.out.println("To square: " + to);
-        System.out.println("Moved Piece: " + pieceMoved);
+        // Make sure the information is accurate
+        assert pieceAt(from) == pieceMoved;
 
         // This is assuming that castling is even legal. If it isn't it can create duplicate kings and stuff
         if (isCastling) {
 
-            // Clear King
+            // Clear King first
             setSquareToPiece(Piece.NONE, from);
+
+            // Handle different cases
 
             // White Queenside Castling
             if (to == 2 && whiteToMove) { 
@@ -337,6 +353,7 @@ public class Position {
                 setSquareToPiece(Piece.BR, 61);
                 castlingRights &= 0b11;
             } else {
+                // Don't question this either, thats just me at 3AM losing my sanity
                 throw new IllegalArgumentException("Woah slow down there buddy ur move is a castling move duh 🙄 but its incorrect but since im so nice here is the move so you can analyze it cuz i am so nice wow i am so nice haha anyways where was i oh yeah the castling move number is, wait what was it, oh yeah, it was 67 HAHAHAHAH sorry that was so unfunny my bad bro ill give you sum robux later but the number is " + move);
             }
             whiteToMove = !whiteToMove;
@@ -347,15 +364,22 @@ public class Position {
         }
 
         if (isEnPassant) {
+            // Check if the move contridicts itself
             if (Move.getPreviousEnPassantSquare(move) == 64) 
                 throw new IllegalArgumentException("Illegal Move: the en passant square is none, though the move is en passant. Croissant!!!");
+
+
             setSquareToPiece(Piece.NONE, from);
             setSquareToPiece(pieceMoved, to);
 
             if (whiteToMove)
+                // Clear square one rank behind the target square
                 setSquareToPiece(Piece.NONE, enPassantSquare - 8);
             else 
+                // Same thing but ahead
                 setSquareToPiece(Piece.NONE, enPassantSquare + 8);
+
+            
             whiteToMove = !whiteToMove;
             enPassantSquare = 64;
 
@@ -371,6 +395,8 @@ public class Position {
             setSquareToPiece(promotionPiece, to);
             enPassantSquare = 64;
         }
+
+        // Check if double push (if it is, set en passant square)
         else if (Move.getDoublePushFlag(move)) {
             if (whiteToMove) 
                 enPassantSquare = to - 8;
@@ -379,6 +405,7 @@ public class Position {
             setSquareToPiece(pieceMoved, to);
         }
         
+        // Normal Move
         else {
             setSquareToPiece(pieceMoved, to);
             enPassantSquare = 64;
@@ -389,7 +416,12 @@ public class Position {
     }
 
     public void undoMove () {
-        long move = moveHistory.peek();
+        // Taking a sneak peak 
+        long move = moveHistory.pop();
+
+        // WIP
+        
+
     }
 
 
@@ -439,6 +471,7 @@ public class Position {
                         System.out.print(".");
                         break;
                     default:
+                        // Yeah about that
                         throw new IllegalStateException("Oh noeserz!!! it seems like this position has a bit of weird stuff in it, and therefore, putting me in a bit of a pickle. I love pickles by the way, its really good. if you disagree, i will eat you instead. anyways, basically, in this position's mailbox, there is a weird piece. it looks, like, uhhh, like an elephant. wait, there is an elephant in chess right? oh right wrong variants. elephants are w tho. in chess pretty sure its a bishop. idk, btw since im so nice, here is the piece: " + mailbox[rank << 3 | file]);
                     
                 }
@@ -489,22 +522,23 @@ public class Position {
 
     public void updateOccupancy () {
         whitePieces = bitboards[0] | bitboards[1] | bitboards[2] | bitboards[3] | bitboards[4] | bitboards[5];
-        blackPieces = bitboards[6] | bitboards[7] /* SIX SEVEN 6️⃣🤷‍♂️7️⃣ */| bitboards[8] | bitboards[9] | bitboards[10] | bitboards[11];
+        blackPieces = bitboards[6] | bitboards[7] | bitboards[8] | bitboards[9] | bitboards[10] | bitboards[11];
 
         occupied = whitePieces | blackPieces;
     }
 
+    // This is just for debugging purposes. This class is not meant to run on its own
     public static void main(String[] args) {
         Position pos = new Position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
         pos.printPosition();
 
         Move.createEnPassantMove(pos, 25, 16);
-        pos.makeMove(Move.createNormalMove(pos, 49, 25));
+        Timer.start();
+        
+        Timer.stop();
+        Timer.printTime();
         pos.printPosition();
-        pos.makeMove(Move.createNormalMove(pos, 8, 24));
-        pos.printPosition();
-        pos.makeMove(Move.createEnPassantMove(pos, 25, 16));
-        pos.printPosition();
+        
     }
     
 }

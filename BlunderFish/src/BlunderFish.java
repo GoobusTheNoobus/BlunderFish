@@ -1,4 +1,7 @@
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
+
 import board.*;
+import gen.Move;
 import gen.MoveGenerator;
 import utils.*;
 
@@ -23,18 +26,12 @@ public class BlunderFish {
         
         for (int i = 0; i < TEST_ITERS; i ++) {
             // Operations Here
-            MoveGenerator.generatePseudoLegalMoves(pos);
-            
-            MoveGenerator.clearArrays();
+            pos.makeMove(Move.createNormalMove(pos, 49, 25));
             
         }
 
         Timer.stop();
 
-        MoveGenerator.generatePseudoLegalMoves(pos);
-        MoveGenerator.printMoveList();
-        
-        System.out.println("♙");
         Timer.printAverageTime(TEST_ITERS);
 
     }

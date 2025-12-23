@@ -1,3 +1,5 @@
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
+
 // Literally the most useless class
 // It used to be full of random stuff, but all the constants got moved to other classes. 
 

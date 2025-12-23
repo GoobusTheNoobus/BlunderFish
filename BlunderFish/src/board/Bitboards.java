@@ -1,6 +1,11 @@
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
+
 package board;
 
+import utils.Utility;
+
 public class Bitboards {
+    // Not sure when these will be used, but could come in handy later
     public static final long A_FILE = 0x0101010101010101L;
     public static final long B_FILE = A_FILE << 1;
     public static final long C_FILE = A_FILE << 2;
@@ -19,17 +24,21 @@ public class Bitboards {
     public static final long RANK_7 = RANK_6 << 8;
     public static final long RANK_8 = RANK_7 << 8;
 
+    // Precomputed Attack Tables, O(1) complexity
     public static final long[] KNIGHT_ATTACKS = new long[64];
     public static final long[] KING_ATTACKS = new long[64];
     public static final long[] WHITE_PAWN_ATTACKS = new long[64];
     public static final long[] BLACK_PAWN_ATTACKS = new long[64];
 
+    // For generating magic bitboards for sliding attacks; These covers the relevant squares that blockers can exist on that can interupt a slider's attack
     public static final long[] ROOK_MASKS = new long[64];
     public static final long[] BISHOP_MASKS = new long[64];
 
+    // Precomputed sliding attacks
     public static final long[][] ROOK_ATTACKS = new long[64][];
     public static final long[][] BISHOP_ATTACKS = new long[64][];
 
+    // Magic numbers (they aren't actually magical, crazy I know right)
     public static final long[] ROOK_MAGIC_NUMBERS = {
         0x2080031423804000L,
         0x4040062000401002L,
@@ -164,6 +173,8 @@ public class Bitboards {
         0x0022101050818080L
     };
 
+    // Number of relevant bits on each square for the corresponding pieces
+
     public static final int[] RELEVANT_ROOK_BITS = {
         12, 11, 11, 11, 11, 11, 11, 12,
         11, 10, 10, 10, 10, 10, 10, 11,
@@ -196,29 +207,29 @@ public class Bitboards {
 
             long whitePawnMask = 0L;
             long blackPawnMask = 0L;
-
+            
             for (int[] whitePawnAttack : whitePawnAttacks) {
-                int x = (i >> 3) + whitePawnAttack[0];
-                int y = (i & 7) + whitePawnAttack[1];
+                int rank = Utility.parseRank(i) + whitePawnAttack[0];
+                int file = Utility.parseFile(i) + whitePawnAttack[1];
 
-                if (x < 0 || x > 7 || y < 0 || y > 7) {
+                if (rank < 0 || rank > 7 || file < 0 || file > 7) {
                     continue;
                 }
 
-                int square = x << 3 | y;
+                int square = Utility.parseSquare(rank, file);
 
                 whitePawnMask |= 1L << square;
 
             }
             for (int[] blackPawnAttack: blackPawnAttacks) {
-                int x = (i >> 3) + blackPawnAttack[0];
-                int y = (i & 7) + blackPawnAttack[1];
+                int rank = Utility.parseRank(i) + blackPawnAttack[0];
+                int file = Utility.parseFile(i) + blackPawnAttack[1];
 
-                if (x < 0 || x > 7 || y < 0 || y > 7) {
+                if (rank < 0 || rank > 7 || file < 0 || file > 7) {
                     continue;
                 }
 
-                int square = x << 3 | y;
+                int square = Utility.parseSquare(rank, file);
 
                 blackPawnMask |= 1L << square;
             } 
@@ -240,14 +251,14 @@ public class Bitboards {
 
             // Iterate through each direction
             for (int[] knightDir : knightDirections) {
-                int x = (i >> 3) + knightDir[0];
-                int y = (i & 7) + knightDir[1];
+                int rank = Utility.parseRank(i) + knightDir[0];
+                int file = Utility.parseFile(i) + knightDir[1];
 
-                if (x < 0 || x > 7 || y < 0 || y > 7) {
+                if (rank < 0 || rank > 7 || file < 0 || file > 7) {
                     continue;
                 }
 
-                int square = x << 3 | y;
+                int square = Utility.parseSquare(rank, file);
 
                 mask |= 1L << square;
 
@@ -264,14 +275,14 @@ public class Bitboards {
 
             // Iterate direction
             for (int[] kingDir : kingDirections) {
-                int x = (i >> 3) + kingDir[0];
-                int y = (i & 7) + kingDir[1];
+                int rank = Utility.parseRank(i) + kingDir[0];
+                int file = Utility.parseFile(i) + kingDir[1];
 
-                if (x < 0 || x > 7 || y < 0 || y > 7) {
+                if (rank < 0 || rank > 7 || file < 0 || file > 7) {
                     continue;
                 }
 
-                int square = x << 3 | y;
+                int square = Utility.parseSquare(rank, file);
 
                 mask |= 1L << square;
 
@@ -286,12 +297,12 @@ public class Bitboards {
         long mask = 0L;
 
         // Parse Rank and File 
-        int rank = square / 8;
-        int file = square % 8;
+        int rank = Utility.parseRank(square);
+        int file = Utility.parseFile(square);
 
         // Iterate in each direction
         for (int newRank = rank + 1; newRank <= 7; newRank++){ // Upwards
-            long newSquareMask = 1L << (newRank * 8 + file);
+            long newSquareMask = 1L << Utility.parseSquare(newRank, file);
             if ((newSquareMask & blockers) != 0L) { // Square is blocked
                 mask |= newSquareMask; 
                 break;
@@ -300,7 +311,7 @@ public class Bitboards {
         } 
 
         for (int newRank = rank - 1; newRank >= 0; newRank--){ // Downwards
-            long newSquareMask = 1L << (newRank * 8 + file);
+            long newSquareMask = 1L << Utility.parseSquare(newRank, file);
             if ((newSquareMask & blockers) != 0L) { // Square is blocked
                 mask |= newSquareMask; 
                 break;
@@ -309,7 +320,7 @@ public class Bitboards {
         }
 
         for (int newFile = file + 1; newFile <= 7; newFile++) { // Right
-            long newSquareMask = 1L << (rank * 8 + newFile);
+            long newSquareMask = 1L << Utility.parseSquare(rank, newFile);
             if ((newSquareMask & blockers) != 0L) { // Square is blocked
                 mask |= newSquareMask; 
                 break;
@@ -317,7 +328,7 @@ public class Bitboards {
             mask |= newSquareMask; 
         } 
         for (int newFile = file - 1; newFile >= 0; newFile--){ // Left
-            long newSquareMask = 1L << (rank * 8 + newFile);
+            long newSquareMask = 1L << Utility.parseSquare(rank, newFile);
             if ((newSquareMask & blockers) != 0L) { // Square is blocked
                 mask |= newSquareMask; 
                 break;
@@ -338,7 +349,7 @@ public class Bitboards {
 
         // Iterate
         for (int newRank = rank + 1, newFile = file + 1; newRank <= 7 && newFile <= 7; newRank++, newFile++){
-            long newSquareMask = 1L << (newRank * 8 + newFile);
+            long newSquareMask = 1L << Utility.parseSquare(newRank, newFile);
             if ((newSquareMask & blockers) != 0L) { // Square is blocked
 
                 mask |= newSquareMask; 
@@ -348,7 +359,7 @@ public class Bitboards {
         }
 
         for (int newRank = rank + 1, newFile = file - 1; newRank <= 7 && newFile >= 0; newRank++, newFile--){
-            long newSquareMask = 1L << (newRank * 8 + newFile);
+            long newSquareMask = 1L << Utility.parseSquare(newRank, newFile);
             if ((newSquareMask & blockers) != 0L) { // Square is blocked
                 mask |= newSquareMask; 
                 break;
@@ -357,7 +368,7 @@ public class Bitboards {
         }
 
         for (int newRank = rank - 1, newFile = file + 1; newRank >= 0 && newFile <= 7; newRank--, newFile++){
-            long newSquareMask = 1L << (newRank * 8 + newFile);
+            long newSquareMask = 1L << Utility.parseSquare(newRank, newFile);
             if ((newSquareMask & blockers) != 0L) { // Square is blocked
                 mask |= newSquareMask; 
                 break;
@@ -366,7 +377,7 @@ public class Bitboards {
         }
 
         for (int newRank = rank - 1, newFile = file - 1; newRank >= 0 && newFile >= 0; newFile--, newRank--){
-            long newSquareMask = 1L << (newRank * 8 + newFile);
+            long newSquareMask = 1L << Utility.parseSquare(newRank, newFile);
             if ((newSquareMask & blockers) != 0L) { // Square is blocked
                 mask |= newSquareMask; 
                 break;
@@ -406,14 +417,14 @@ public class Bitboards {
             long mask = 0L;
 
             // Parse Rank and File 
-            int rank = square / 8;
-            int file = square % 8;
+            int rank = Utility.parseRank(square);
+            int file = Utility.parseFile(square);
 
             // Iterate in each direction
-            for (int newRank = rank + 1; newRank <= 6; newRank++) mask |= 1L << (newRank * 8 + file); // Upwards
-            for (int newRank = rank - 1; newRank >= 1; newRank--) mask |= 1L << (newRank * 8 + file); // Downwards
-            for (int newFile = file + 1; newFile <= 6; newFile++) mask |= 1L << (rank * 8 + newFile); // Right
-            for (int newFile = file - 1; newFile >= 1; newFile--) mask |= 1L << (rank * 8 + newFile); // Left
+            for (int newRank = rank + 1; newRank <= 6; newRank++) mask |= 1L << Utility.parseSquare(newRank, file); // Upwards
+            for (int newRank = rank - 1; newRank >= 1; newRank--) mask |= 1L << Utility.parseSquare(newRank, file); // Downwards
+            for (int newFile = file + 1; newFile <= 6; newFile++) mask |= 1L << Utility.parseSquare(rank, newFile); // Right
+            for (int newFile = file - 1; newFile >= 1; newFile--) mask |= 1L << Utility.parseSquare(rank, newFile); // Left
 
             // Put it into ROOK_MASK
             ROOK_MASKS[square] = mask;
@@ -425,13 +436,13 @@ public class Bitboards {
 
 
             // Iterate
-            for (int newRank = rank + 1, newFile = file + 1; newRank <= 6 && newFile <= 6; newRank++, newFile++)    mask |= 1L << (newRank * 8 + newFile); // NE
+            for (int newRank = rank + 1, newFile = file + 1; newRank <= 6 && newFile <= 6; newRank++, newFile++) mask |= 1L << Utility.parseSquare(newRank, newFile); // NE
 
-            for (int newRank = rank + 1, newFile = file - 1; newRank <= 6 && newFile >= 1; newRank++, newFile--) mask |= 1L << (newRank * 8 + newFile); // NW
+            for (int newRank = rank + 1, newFile = file - 1; newRank <= 6 && newFile >= 1; newRank++, newFile--) mask |= 1L << Utility.parseSquare(newRank, newFile); // NW
 
-            for (int newRank = rank - 1, newFile = file + 1; newRank >= 1 && newFile <= 6; newRank--, newFile++) mask |= 1L << (newRank * 8 + newFile); // SE
+            for (int newRank = rank - 1, newFile = file + 1; newRank >= 1 && newFile <= 6; newRank--, newFile++) mask |= 1L << Utility.parseSquare(newRank, newFile); // SE
 
-            for (int newRank = rank - 1, newFile = file - 1; newRank >= 1 && newFile >= 1; newRank--, newFile--) mask |= 1L << (newRank * 8 + newFile); // SW
+            for (int newRank = rank - 1, newFile = file - 1; newRank >= 1 && newFile >= 1; newRank--, newFile--) mask |= 1L << Utility.parseSquare(newRank, newFile); // SW
 
             // Put it into BISHOP_MASKS
             BISHOP_MASKS[square] = mask;

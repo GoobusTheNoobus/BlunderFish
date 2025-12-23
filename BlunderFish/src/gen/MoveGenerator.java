@@ -1,9 +1,9 @@
-package gen;
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
 
+package gen;
 
 import java.util.Arrays;
 import board.*;
-import utils.Constants;
 
 
 public class MoveGenerator {
