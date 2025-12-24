@@ -21,7 +21,10 @@ public class Constants {
     public static final char BLACK_QUEEN_CHAR  = 'q';
     public static final char BLACK_KING_CHAR   = 'k';
 
-    
+    public static final int WHITE_KINGSIDE_CASTLING_MASK = 0b0001;
+    public static final int WHITE_QUEENSIDE_CASTLING_MASK = 0b0010;
+    public static final int BLACK_KINGSIDE_CASTLING_MASK = 0b0100;
+    public static final int BLACK_QUEENSIDE_CASTLING_MASK = 0b1000;
 
     
 

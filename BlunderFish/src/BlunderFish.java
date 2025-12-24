@@ -2,8 +2,9 @@
 
 import board.*;
 import board.bitboards.Bitboards;
-import gen.Move;
-import gen.MoveGenerator;
+import board.position.Position;
+import board.position.moves.Move;
+import board.position.moves.MoveGenerator;
 import utils.*;
 
 
@@ -36,7 +37,7 @@ public class BlunderFish {
 
         MoveGenerator.generatePseudoLegalMoves(pos);
         MoveGenerator.printMoveList();
-        Timer.printTime();
+        Timer.printAverageTime(TEST_ITERS);
 
     }
 }

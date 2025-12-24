@@ -1,22 +1,23 @@
 /* ---------------------MY FIRST CHESS ENGINE--------------------- */
 
-package gen;
+package board.position.moves;
 
 import java.util.Arrays;
 import board.*;
 import board.bitboards.Bitboards;
+import board.position.Position;
 
 
 public class MoveGenerator {
     // Moves
-    public static long[] pseudoLegalMoves = new long[512];
-    public static long[] legalMoves = new long[512];
+    public static int[] pseudoLegalMoves = new int[512];
+    public static int[] legalMoves = new int[512];
 
     // Counters
     public static int pseudoLegalMovesCounter;
     public static int legalMovesCounter;
 
-    private static void appendPseudoLegalMove (long move) {
+    private static void appendPseudoLegalMove (int move) {
         pseudoLegalMoves[pseudoLegalMovesCounter++] = move;
     }
 
@@ -25,7 +26,7 @@ public class MoveGenerator {
     } */
 
     public static void clearArrays() {
-        Arrays.fill(pseudoLegalMoves, 0L);
+        Arrays.fill(pseudoLegalMoves, 0);
         Arrays.fill(legalMoves, 0);
 
         pseudoLegalMovesCounter = 0;
@@ -42,7 +43,7 @@ public class MoveGenerator {
 
     private static void generatePawnMoves (Position pos, boolean white) {
         if (white) {
-            long pieces = pos.bitboards[Piece.WP];
+            long pieces = pos.fetchBitboard(Piece.WP);
             
             while (pieces != 0L) {
                 // Get a pawn
@@ -54,50 +55,50 @@ public class MoveGenerator {
 
                 int to = from + 8;
 
-                if (!isOccupied(pos.occupied, to)) { // Front square isnt occupied 
+                if (!isOccupied(pos.board.occupied, to)) { // Front square isnt occupied 
                     if (fromRank == 6) {
                         // Add promotion moves 
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.WN));
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.WB));
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.WR));
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.WQ));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.WN, false, false));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.WB, false, false));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.WR, false, false));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.WQ, false, false));
                     } else {
-                        appendPseudoLegalMove(Move.createNormalMove(pos, from, to));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.NONE, false, false));
                     }
 
                     // Now for double pawn push
                     if (fromRank == 1) {
                         int doublePushTo = from + 16;
-                        if (!isOccupied(pos.occupied, doublePushTo))
-                            appendPseudoLegalMove(Move.createNormalMove(pos, from, doublePushTo));
+                        if (!isOccupied(pos.board.occupied, doublePushTo))
+                            appendPseudoLegalMove(Move.createMove(pos, from, doublePushTo, Piece.NONE, false, false));
                     }
                     
                 }
 
                 // Captures
-                long capturedBitboard = pos.blackPieces & Bitboards.WHITE_PAWN_ATTACKS[from];
+                long capturedBitboard = pos.board.blackPieces & Bitboards.WHITE_PAWN_ATTACKS[from];
                 while (capturedBitboard != 0L) {
                     int lsb = Long.numberOfTrailingZeros(capturedBitboard);
                     if (fromRank + 1 == 7) {
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.WN));
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.WB));
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.WR));
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.WQ));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.WN, false, false));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.WB, false, false));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.WR, false, false));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.WQ, false, false));
                     }else 
-                    appendPseudoLegalMove(Move.createNormalMove(pos, from, lsb));
+                    appendPseudoLegalMove(Move.createMove(pos, from, lsb, Piece.NONE, false, false));
                 }
 
                 // Time for EN CROISSANT 🥐
 
-                long enPassantBitboard = 1L << pos.enPassantSquare;
+                long enPassantBitboard = 1L << pos.gameState.enPassantSquare;
                 if ((enPassantBitboard & Bitboards.WHITE_PAWN_ATTACKS[from]) != 0L) {
-                    appendPseudoLegalMove(Move.createEnPassantMove(pos, from, pos.enPassantSquare));
+                    appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.NONE, false, true));
                 }
 
                 pieces &= pieces - 1;
             }
         } else {
-            long pieces = pos.bitboards[Piece.BP];
+            long pieces = pos.fetchBitboard(Piece.BP);
 
             while (pieces != 0L) {
                 // Get pawn
@@ -108,44 +109,44 @@ public class MoveGenerator {
 
                 int to = from - 8;
 
-                if (!isOccupied(pos.occupied, to)) {
+                if (!isOccupied(pos.board.occupied, to)) {
                     if (fromRank == 1) { // Promotion
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.BN));
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.BB));
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.BR));
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.BQ));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.BN, false, false));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.BB, false, false));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.BR, false, false));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.BQ, false, false));
                     } else {
-                        appendPseudoLegalMove(Move.createNormalMove(pos, from, to));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.NONE, false, false));
                     }
 
                     // Double Push
                     if (fromRank == 6) {
                         int doublePushTo = from - 16;
-                        if (!isOccupied(pos.occupied, doublePushTo)) {
-                            appendPseudoLegalMove(Move.createNormalMove(pos, from, doublePushTo));
+                        if (!isOccupied(pos.board.occupied, doublePushTo)) {
+                            appendPseudoLegalMove(Move.createMove(pos, from, doublePushTo, Piece.NONE, false, false));
                         }
                     }
                 }
 
                 // Captures YAEY
 
-                long capturedBitboard = pos.whitePieces & Bitboards.BLACK_PAWN_ATTACKS[from];
+                long capturedBitboard = pos.board.whitePieces & Bitboards.BLACK_PAWN_ATTACKS[from];
                 while (capturedBitboard != 0L) {
                     int lsb = Long.numberOfTrailingZeros(capturedBitboard);
                     if (fromRank + 1 == 7) {
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.BN));
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.BB));
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.BR));
-                        appendPseudoLegalMove(Move.createPromotionMove(pos, from, to, Piece.BQ));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.BN, false, false));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.BB, false, false));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.BR, false, false));
+                        appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.BQ, false, false));
                     }else 
-                    appendPseudoLegalMove(Move.createNormalMove(pos, from, lsb));
+                    appendPseudoLegalMove(Move.createMove(pos, from, lsb, Piece.NONE, false, false));
                 }
 
                 // Time for EN CROISSANT 🥐
 
-                long enPassantBitboard = 1L << pos.enPassantSquare;
+                long enPassantBitboard = 1L << pos.gameState.enPassantSquare;
                 if ((enPassantBitboard & Bitboards.BLACK_PAWN_ATTACKS[from]) != 0L) {
-                    appendPseudoLegalMove(Move.createEnPassantMove(pos, from, pos.enPassantSquare));
+                    appendPseudoLegalMove(Move.createMove(pos, from, pos.gameState.enPassantSquare, Piece.NONE, false, true));
                 }
 
                 pieces &= pieces - 1;
@@ -159,8 +160,8 @@ public class MoveGenerator {
     }
 
     private static void generateKnightMoves (Position pos, boolean white) {
-        long pieces = white? pos.bitboards[Piece.WN]: pos.bitboards[Piece.BN];
-        long friendlies = white? pos.whitePieces: pos.blackPieces;
+        long pieces = white? pos.fetchBitboard(Piece.WN): pos.fetchBitboard(Piece.BN);
+        long friendlies = white? pos.board.whitePieces: pos.board.blackPieces;
 
         while (pieces != 0L) {
             int from = Long.numberOfTrailingZeros(pieces);
@@ -169,7 +170,7 @@ public class MoveGenerator {
 
             while (attackBitboard != 0L) {
                 int to = Long.numberOfTrailingZeros(attackBitboard);
-                appendPseudoLegalMove(Move.createNormalMove(pos, from, to));
+                appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.NONE, false, false));
                 attackBitboard &= attackBitboard - 1;
             }
 
@@ -179,8 +180,8 @@ public class MoveGenerator {
     }
 
     private static void generateKingMoves (Position pos, boolean white) {
-        long pieces = white? pos.bitboards[Piece.WK]: pos.bitboards[Piece.BK];
-        long friendlies = white? pos.whitePieces: pos.blackPieces;
+        long pieces = white? pos.fetchBitboard(Piece.WK): pos.fetchBitboard(Piece.BK);
+        long friendlies = white? pos.board.whitePieces: pos.board.blackPieces;
 
         while (pieces != 0L) {
             int from = Long.numberOfTrailingZeros(pieces);
@@ -189,7 +190,7 @@ public class MoveGenerator {
 
             while (attackBitboard != 0L) {
                 int to = Long.numberOfTrailingZeros(attackBitboard);
-                appendPseudoLegalMove(Move.createNormalMove(pos, from, to));
+                appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.NONE, false, false));
                 attackBitboard &= attackBitboard - 1;
             }
 
@@ -199,16 +200,16 @@ public class MoveGenerator {
     }
 
     private static void generateRookMoves (Position pos, boolean white) {
-        long pieces = white? pos.bitboards[Piece.WR]: pos.bitboards[Piece.BR];
-        long friendlies = white? pos.whitePieces: pos.blackPieces;
+        long pieces = white? pos.fetchBitboard(Piece.WR): pos.fetchBitboard(Piece.BR);
+        long friendlies = white? pos.board.whitePieces: pos.board.blackPieces;
 
         while (pieces != 0L) {
             int from = Long.numberOfTrailingZeros(pieces);
     
-            long attackBitboard = Bitboards.getRookAttack(pos.occupied, from) & ~friendlies;
+            long attackBitboard = Bitboards.getRookAttack(pos.board.occupied, from) & ~friendlies;
             while (attackBitboard != 0L) {
                 int to = Long.numberOfTrailingZeros(attackBitboard);
-                appendPseudoLegalMove(Move.createNormalMove(pos, from, to));
+                appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.NONE, false, false));
                 attackBitboard &= attackBitboard - 1;
             }
             pieces &= pieces - 1;
@@ -216,16 +217,16 @@ public class MoveGenerator {
     }
 
     public static void generateBishopMoves (Position pos, boolean white) {
-        long pieces = white? pos.bitboards[Piece.WB]: pos.bitboards[Piece.BB];
-        long friendlies = white? pos.whitePieces: pos.blackPieces;
+        long pieces = white? pos.fetchBitboard(Piece.WB): pos.fetchBitboard(Piece.BB);
+        long friendlies = white? pos.board.whitePieces: pos.board.blackPieces;
 
         while (pieces != 0L) {
             int from = Long.numberOfTrailingZeros(pieces);
-            long attackBitboard = Bitboards.getBishopAttack(pos.occupied, from) & ~friendlies;
+            long attackBitboard = Bitboards.getBishopAttack(pos.board.occupied, from) & ~friendlies;
 
             while (attackBitboard != 0L) {
                 int to = Long.numberOfTrailingZeros(attackBitboard);
-                appendPseudoLegalMove(Move.createNormalMove(pos, from, to));
+                appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.NONE, false, false));
                 attackBitboard &= attackBitboard - 1;
             }
             pieces &= pieces - 1;
@@ -233,17 +234,17 @@ public class MoveGenerator {
     }
 
     private static void generateQueenMoves (Position pos, boolean white) {
-        long pieces = white? pos.bitboards[Piece.WQ]: pos.bitboards[Piece.BQ];
-        long friendlies = white? pos.whitePieces: pos.blackPieces;
+        long pieces = white? pos.fetchBitboard(Piece.WQ): pos.fetchBitboard(Piece.BQ);
+        long friendlies = white? pos.board.whitePieces: pos.board.blackPieces;
 
         while (pieces != 0L) {
             int from = Long.numberOfTrailingZeros(pieces);
 
-            long attackBitboard = (Bitboards.getBishopAttack(pos.occupied, from) | Bitboards.getRookAttack(pos.occupied, from)) & ~friendlies;
+            long attackBitboard = (Bitboards.getBishopAttack(pos.board.occupied, from) | Bitboards.getRookAttack(pos.board.occupied, from)) & ~friendlies;
 
             while (attackBitboard != 0L) {
                 int to = Long.numberOfTrailingZeros(attackBitboard);
-                appendPseudoLegalMove(Move.createNormalMove(pos, from, to));
+                appendPseudoLegalMove(Move.createMove(pos, from, to, Piece.NONE, false, false));
                 attackBitboard &= attackBitboard - 1;
             }
             pieces &= pieces - 1;
@@ -251,7 +252,7 @@ public class MoveGenerator {
     }
 
     public static void generatePseudoLegalMoves (Position pos) {
-        if (pos.whiteToMove) {
+        if (pos.gameState.whiteToMove) {
             generatePawnMoves(pos, true);
             generateBishopMoves(pos, true);
             generateKnightMoves(pos, true);

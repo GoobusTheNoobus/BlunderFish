@@ -1,3 +1,5 @@
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
+
 package board.bitboards.attacks.sliders;
 
 public class Magic {
