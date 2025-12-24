@@ -4,6 +4,7 @@ package gen;
 
 import java.util.Arrays;
 import board.*;
+import board.bitboards.Bitboards;
 
 
 public class MoveGenerator {

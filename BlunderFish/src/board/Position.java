@@ -5,6 +5,8 @@ package board;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 
+import board.bitboards.Bitboards;
+import board.bitboards.masks.*;
 import gen.Move;
 import utils.Utility;
 import utils.Constants;
@@ -219,11 +221,11 @@ public class Position {
         // Pawn Attacks
 
         if (white){
-            if (((mask >>> 7) & pawns & ~Bitboards.A_FILE) != 0) return true;
-            if (((mask >>> 9) & pawns & ~Bitboards.H_FILE) != 0) return true;
+            if (((mask >>> 7) & pawns & ~FileMasks.A_FILE) != 0) return true;
+            if (((mask >>> 9) & pawns & ~FileMasks.H_FILE) != 0) return true;
         } else {
-            if (((mask << 7) & pawns & ~Bitboards.H_FILE) != 0) return true;
-            if (((mask << 9) & pawns & ~Bitboards.A_FILE) != 0) return true;
+            if (((mask << 7) & pawns & ~FileMasks.H_FILE) != 0) return true;
+            if (((mask << 9) & pawns & ~FileMasks.A_FILE) != 0) return true;
         }
 
         // Knights Attacks
@@ -233,8 +235,8 @@ public class Position {
         if ((Bitboards.KING_ATTACKS[square] & king) != 0) return true;
 
         // Sliding Pieces: Magic (not actually magic just a big database) Tables
-        long rookAttacks = Bitboards.getRookAttack(occupied & Bitboards.ROOK_MASKS[square], square);
-        long bishopAttacks = Bitboards.getBishopAttack(occupied & Bitboards.BISHOP_MASKS[square], square);
+        long rookAttacks = Bitboards.getRookAttack(occupied, square);
+        long bishopAttacks = Bitboards.getBishopAttack(occupied, square);
 
         if (((rookAttacks & rooks) != 0L) || ((rookAttacks & queens)  != 0L)) {
             return true;
@@ -418,8 +420,23 @@ public class Position {
     public void undoMove () {
         // Taking a sneak peak 
         long move = moveHistory.pop();
+        int to = Move.getToSquare(move);
+        int from = Move.getFromSquare(move);
 
-        // WIP
+        if (Move.getCastlingFlag(move)) {
+            // Delete King
+            setSquareToPiece(Piece.NONE, to);
+
+            // Check different cases
+
+            // White Queenside
+            if (to == 2) {
+                setSquareToPiece(Piece.NONE, 3);
+                setSquareToPiece(Piece.WR, 0);
+                setSquareToPiece(Piece.WK, from);
+
+            }
+        }
         
 
     }
