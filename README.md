@@ -8,9 +8,10 @@ engine is probably gonna suck.
 - canCastle too
 - Magic Bitboards; that took WAY to long to figure out
 - makeMove function
-
-# Next steps
 - Make undoMove function
 - Make full legal move gen
+
+# Next steps
+- Calculate stalemate/checkmate
 - Start the evaluation and searching functions, which I have no idea how to do
 
