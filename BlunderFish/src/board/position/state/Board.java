@@ -2,9 +2,9 @@
 
 package board.position.state;
 
-import board.Piece;
-
 import java.util.Arrays;
+
+import board.position.Piece;
 
 public class Board {
     // Bitboards for each piece type: 0th bitboard is empty

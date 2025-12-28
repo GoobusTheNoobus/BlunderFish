@@ -2,20 +2,21 @@
 
 package board.position;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
+import javax.print.attribute.standard.PrinterInfo;
 
-import board.Piece;
 import board.bitboards.Bitboards;
-import board.bitboards.masks.*;
 import board.position.state.MoveStack;
-import utils.Utility;
 import utils.Constants;
-import utils.Timer;
+import utils.Utility;
 import board.position.state.*;
 import board.position.helper.FENParser;
-import board.position.moves.AttackDetector;
-import board.position.moves.Move;;
+import board.position.helper.PositionPrinter;
+import board.position.moves.MoveHandler;
+import board.position.moves.helper.AttackDetector;
+import board.position.moves.helper.Move;
+import board.position.moves.helper.MoveMaker;
+import board.position.moves.helper.MoveUndoer;
+
 /**
  * Represents a chess position with board state, move number, and a move history "stack"
  * Uses both bitboard and mailbox representations for efficiency and speed
@@ -50,6 +51,7 @@ public class Position {
 
     public Position() {
         FENParser.loadFEN(defaultPositionFen, board, gameState);
+        Bitboards.printBitboard(board.whitePieces);
     }    
 
     public int pieceAt(int square) {
@@ -64,6 +66,10 @@ public class Position {
         int kingIndex = (gameState.whiteToMove) ? Long.numberOfTrailingZeros(board.bitboards[Piece.WK]) : Long.numberOfTrailingZeros(board.bitboards[Piece.BK]);
         return isSquareAttacked(kingIndex, !gameState.whiteToMove);
     }
+    public boolean isKingCapturable () {
+        int kingIndex = (gameState.whiteToMove) ? Long.numberOfTrailingZeros(board.bitboards[Piece.BK]) : Long.numberOfTrailingZeros(board.bitboards[Piece.WK]);
+        return isSquareAttacked(kingIndex, gameState.whiteToMove);
+    }
 
     public boolean canCastle (boolean kingSide) {
         if (isInCheck()) {
@@ -72,7 +78,7 @@ public class Position {
 
         if (kingSide) {
             if (gameState.whiteToMove) {
-                if (CastlingRights.hasRight(gameState.castlingRights, CastlingRights.WHITE_KINGSIDE_CASTLING_MASK)) 
+                if (gameState.hasRight(Constants.WHITE_KINGSIDE_CASTLING_MASK)) 
                     return false;
 
                 if (isSquareAttacked(5, false)) 
@@ -81,7 +87,7 @@ public class Position {
                 if (isSquareAttacked(6, false)) 
                     return false;
             } else {
-                if (CastlingRights.hasRight(gameState.castlingRights, CastlingRights.BLACK_KINGSIDE_CASTLING_MASK)) 
+                if (gameState.hasRight(Constants.BLACK_KINGSIDE_CASTLING_MASK)) 
                     return false;
 
                 if (isSquareAttacked(61, true))
@@ -92,14 +98,14 @@ public class Position {
             }
         } else {
             if (gameState.whiteToMove) {
-                if (CastlingRights.hasRight(gameState.castlingRights, CastlingRights.WHITE_QUEENSIDE_CASTLING_MASK))
+                if (gameState.hasRight(Constants.WHITE_QUEENSIDE_CASTLING_MASK))
                     return false;
                 if ((isSquareAttacked(2, false)))
                     return false;
                 if ((isSquareAttacked(3, false)))
                     return false;
             } else {
-                if (CastlingRights.hasRight(gameState.castlingRights, CastlingRights.BLACK_QUEENSIDE_CASTLING_MASK)) 
+                if (gameState.hasRight(Constants.BLACK_QUEENSIDE_CASTLING_MASK)) 
                     return false;
                 if ((isSquareAttacked(58, true)))
                     return false;
@@ -113,108 +119,40 @@ public class Position {
     public long fetchBitboard (int index) {
         return board.bitboards[index];
     }
+
+    public void makeMove (long move) {
+        moveStack.push(move);
+
+        MoveHandler.makeMove(board, gameState, move);
+        
+    }
+
+    public void undoMove () {
+        long move = moveStack.pop();
+
+        MoveHandler.undoMove(board, gameState, move);
+        
+    }
     
 
     // helpers
     public void printPosition() {
-        for (int rank = 7; rank >= 0; rank--) {
-            System.out.print((rank + 1) + " ");
-            for (int file = 0; file < 8; file++) {
-                switch (board.mailbox[rank << 3 | file]) {
-                    case Piece.WP:
-                        System.out.print(Constants.WHITE_PAWN_CHAR);
-                        break;
-                    case Piece.BP:
-                        System.out.print(Constants.BLACK_PAWN_CHAR);
-                        break;
-                    case Piece.WN:
-                        System.out.print(Constants.WHITE_KNIGHT_CHAR);
-                        break;
-                    case Piece.BN:
-                        System.out.print(Constants.BLACK_KNIGHT_CHAR);
-                        break;
-                    case Piece.WB:
-                        System.out.print(Constants.WHITE_BISHOP_CHAR);
-                        break;
-                    case Piece.BB:
-                        System.out.print(Constants.BLACK_BISHOP_CHAR);
-                        break;
-                    case Piece.WR:
-                        System.out.print(Constants.WHITE_ROOK_CHAR);
-                        break;
-                    case Piece.BR:
-                        System.out.print(Constants.BLACK_ROOK_CHAR);
-                        break;
-                    case Piece.WQ:
-                        System.out.print(Constants.WHITE_QUEEN_CHAR);
-                        break;
-                    case Piece.BQ:
-                        System.out.print(Constants.BLACK_QUEEN_CHAR);
-                        break;
-                    case Piece.WK:
-                        System.out.print(Constants.WHITE_KING_CHAR);
-                        break;
-                    case Piece.BK:
-                        System.out.print(Constants.BLACK_KING_CHAR);
-                        break;
-                    case Piece.NONE:
-                        System.out.print(".");
-                        break;
-                    default:
-                        // Yeah about that
-                        throw new IllegalStateException("Oh noeserz!!! it seems like this position has a bit of weird stuff in it, and therefore, putting me in a bit of a pickle. I love pickles by the way, its really good. if you disagree, i will eat you instead. anyways, basically, in this position's mailbox, there is a weird piece. it looks, like, uhhh, like an elephant. wait, there is an elephant in chess right? oh right wrong variants. elephants are w tho. in chess pretty sure its a bishop. idk, btw since im so nice, here is the piece: " + board.mailbox[rank << 3 | file]);
-                    
-                }
-                System.out.print(" ");
-            }
-            
-            System.out.println();
-        }
-        System.out.println("  a b c d e f g h");
-        System.out.println("Side to move: " + (gameState.whiteToMove ? "White" : "Black"));
-        System.out.println("En Croissant Square: " + gameState.enPassantSquare);
+        PositionPrinter.printBoardState(board);
+        PositionPrinter.printGameState(gameState);
     }
-
-    public void setSquareToPiece(int piece, int square) {
-
-        int oldPiece = board.mailbox[square];
-        long squareMask = 1L << square;
-
-        // 1. Remove old piece (if any)
-        if (oldPiece != Piece.NONE) {
-            board.bitboards[oldPiece - 1] &= ~squareMask;
-
-            if (oldPiece <= Piece.WK) {
-                board.whitePieces &= ~squareMask;
-            } else {
-                board.blackPieces &= ~squareMask;
-            }
-
-            board.occupied &= ~squareMask;
-        }
-
-        // 2. Place new piece (if any)
-        board.mailbox[square] = piece;
-
-        if (piece != Piece.NONE) {
-            board.bitboards[piece - 1] |= squareMask;
-
-            if (piece <= Piece.WK) {
-                board.whitePieces |= squareMask;
-            } else {
-                board.blackPieces |= squareMask;
-            }
-
-            board.occupied |= squareMask;
-        }
-    }
-
-
-    
 
     // This is just for debugging purposes. This class is not meant to run on its own
     public static void main(String[] args) {
+        Position pos = new Position("rnbqkbnr/pppp1p1p/8/6N1/4P3/8/PPPP3p/RNBQKBR1 b Qkq - 1 6");
         
+        pos.printPosition();
+        pos.makeMove(Move.createMove(pos, Utility.getSquareIntFromString("h2"), Utility.getSquareIntFromString("g1"), Piece.BQ, false, false));
+        
+        pos.printPosition();
+
+        pos.undoMove();
+
+        pos.printPosition();
         
     }
     

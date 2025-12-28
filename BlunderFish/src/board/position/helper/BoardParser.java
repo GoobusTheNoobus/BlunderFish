@@ -1,6 +1,6 @@
 package board.position.helper;
 
-import board.Piece;
+import board.position.Piece;
 import board.position.state.Board;;
 
 public class BoardParser {
@@ -82,8 +82,8 @@ public class BoardParser {
     }
     public static void updateOccupancy (Board board) {
         long[] bitboards = board.bitboards;
-        board.whitePieces = bitboards[0] | bitboards[1] | bitboards[2] | bitboards[3] | bitboards[4] | bitboards[5];
-        board.blackPieces = bitboards[6] | bitboards[7] | bitboards[8] | bitboards[9] | bitboards[10] | bitboards[11];
+        board.whitePieces = bitboards[Piece.WP] | bitboards[Piece.WN] | bitboards[Piece.WB] | bitboards[Piece.WR] | bitboards[Piece.WQ] | bitboards[Piece.WK];
+        board.blackPieces = bitboards[Piece.BP] | bitboards[Piece.BN] | bitboards[Piece.BB] | bitboards[Piece.BR] | bitboards[Piece.BQ] | bitboards[Piece.BK];
 
         board.occupied = board.whitePieces | board.blackPieces;
     }

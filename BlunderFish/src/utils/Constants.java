@@ -26,6 +26,9 @@ public class Constants {
     public static final int BLACK_KINGSIDE_CASTLING_MASK = 0b0100;
     public static final int BLACK_QUEENSIDE_CASTLING_MASK = 0b1000;
 
-    
+    public static final int CASTLING_KINGSIDE_FLAG = 0b1;
+    public static final int CASTLING_QUEENSIDE_FLAG = 0b10;
+    public static final int EN_PASSANT_FLAG = 0b11;
+    public static final int DOUBLE_PAWN_PUSH = 0b100 ;
 
 }

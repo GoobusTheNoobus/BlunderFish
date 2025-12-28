@@ -1,6 +1,7 @@
 package board.position.helper;
 
 import board.position.state.*;
+import utils.Constants;
 import utils.Utility;;
 
 public class StateParser {
@@ -22,22 +23,23 @@ public class StateParser {
             for (char i: str.toCharArray()) {
                 switch (i) {
                     case 'K':
-                        CastlingRights.addRight(state.castlingRights, 1);
+                        state.addRight(Constants.WHITE_KINGSIDE_CASTLING_MASK);
                         break;
                     case 'Q':
-                        CastlingRights.addRight(state.castlingRights, 2);
+                        state.addRight(Constants.WHITE_QUEENSIDE_CASTLING_MASK);
                         break;
                     case 'k':
-                        CastlingRights.addRight(state.castlingRights, 4);
+                        state.addRight(Constants.BLACK_KINGSIDE_CASTLING_MASK);
                         break;
                     case 'q':
-                        CastlingRights.addRight(state.castlingRights, 8);
+                        state.addRight(Constants.BLACK_QUEENSIDE_CASTLING_MASK);
                         break;
                     default:
                         throw new IllegalArgumentException("Invalid FEN character in castling rights field" + i);
                 }
             }
         }
+       
     }
     public static void parseEnPassant (GameState state, String str) {
         if (str.equals("-")) {

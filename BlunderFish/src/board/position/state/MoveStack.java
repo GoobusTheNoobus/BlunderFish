@@ -1,8 +1,8 @@
 package board.position.state;
 
 public class MoveStack {
-    long[] moves;
-    int stackPointer;
+    private long[] moves;
+    private int stackPointer;
 
     public MoveStack(int capacity) {
         moves = new long[capacity];
@@ -14,7 +14,11 @@ public class MoveStack {
 
     public long pop () {
         stackPointer--;
-        return moves[stackPointer];
+        long move = moves[stackPointer];
+
+        moves[stackPointer] = 0L;
+
+        return move;
     }
 
     public long peek () {

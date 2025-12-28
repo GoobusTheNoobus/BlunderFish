@@ -1,8 +1,8 @@
-package board.position.moves;
+package board.position.moves.helper;
 
-import board.Piece;
 import board.bitboards.Bitboards;
 import board.bitboards.masks.FileMasks;
+import board.position.Piece;
 import board.position.state.Board;
 
 public class AttackDetector {

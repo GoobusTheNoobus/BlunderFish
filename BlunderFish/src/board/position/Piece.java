@@ -1,6 +1,6 @@
 /* ---------------------MY FIRST CHESS ENGINE--------------------- */
 
-package board;
+package board.position;
 
 public class Piece{
     public static final int NONE = 0;
