@@ -2,20 +2,14 @@
 
 package board.position;
 
-import javax.print.attribute.standard.PrinterInfo;
-
-import board.bitboards.Bitboards;
-import board.position.state.MoveStack;
 import utils.Constants;
-import utils.Utility;
 import board.position.state.*;
 import board.position.helper.FENParser;
 import board.position.helper.PositionPrinter;
+import board.position.moves.MoveGenerator;
 import board.position.moves.MoveHandler;
 import board.position.moves.helper.AttackDetector;
-import board.position.moves.helper.Move;
-import board.position.moves.helper.MoveMaker;
-import board.position.moves.helper.MoveUndoer;
+
 
 /**
  * Represents a chess position with board state, move number, and a move history "stack"
@@ -51,7 +45,6 @@ public class Position {
 
     public Position() {
         FENParser.loadFEN(defaultPositionFen, board, gameState);
-        Bitboards.printBitboard(board.whitePieces);
     }    
 
     public int pieceAt(int square) {
@@ -63,22 +56,42 @@ public class Position {
     }
 
     public boolean isInCheck() {
-        int kingIndex = (gameState.whiteToMove) ? Long.numberOfTrailingZeros(board.bitboards[Piece.WK]) : Long.numberOfTrailingZeros(board.bitboards[Piece.BK]);
-        return isSquareAttacked(kingIndex, !gameState.whiteToMove);
+        return isKingAttacked(gameState.whiteToMove);
     }
+
     public boolean isKingCapturable () {
-        int kingIndex = (gameState.whiteToMove) ? Long.numberOfTrailingZeros(board.bitboards[Piece.BK]) : Long.numberOfTrailingZeros(board.bitboards[Piece.WK]);
-        return isSquareAttacked(kingIndex, gameState.whiteToMove);
+        return isKingAttacked(!gameState.whiteToMove);
+    }
+    public boolean isKingAttacked (boolean isWhiteKing) {
+        if (isWhiteKing) {
+            int kingIndex = Long.numberOfTrailingZeros(board.bitboards[Piece.WK]);
+            if (board.bitboards[Piece.WK] == 0L) {
+                printPosition();
+                moveStack.printStack();
+                throw new IllegalArgumentException("no white king");
+                
+            }
+            return isSquareAttacked(kingIndex, false);
+        } else {
+            int kingIndex = Long.numberOfTrailingZeros(board.bitboards[Piece.BK]);
+            if (board.bitboards[Piece.BK] == 0L) {
+                printPosition();
+                throw new IllegalArgumentException("no black king");
+            }
+            return isSquareAttacked(kingIndex, true);
+        }
     }
 
     public boolean canCastle (boolean kingSide) {
-        if (isInCheck()) {
-            return false;
-        }
-
         if (kingSide) {
             if (gameState.whiteToMove) {
                 if (gameState.hasRight(Constants.WHITE_KINGSIDE_CASTLING_MASK)) 
+                    return false;
+
+                if ((board.occupied & Constants.WK_CASTLING_BETWEEN_MASK) != 0L) 
+                    return false;
+
+                if (!(pieceAt(7) == Piece.WR) || !(pieceAt(4) == Piece.WK))
                     return false;
 
                 if (isSquareAttacked(5, false)) 
@@ -86,8 +99,16 @@ public class Position {
                 
                 if (isSquareAttacked(6, false)) 
                     return false;
+
+
             } else {
                 if (gameState.hasRight(Constants.BLACK_KINGSIDE_CASTLING_MASK)) 
+                    return false;
+
+                if ((board.occupied & Constants.BK_CASTLING_BETWEEN_MASK) != 0L) 
+                    return false;
+
+                if (!(pieceAt(63) == Piece.WR) || !(pieceAt(60) == Piece.WK))
                     return false;
 
                 if (isSquareAttacked(61, true))
@@ -100,15 +121,32 @@ public class Position {
             if (gameState.whiteToMove) {
                 if (gameState.hasRight(Constants.WHITE_QUEENSIDE_CASTLING_MASK))
                     return false;
+
+                if ((board.occupied & Constants.WQ_CASTLING_BETWEEN_MASK) != 0L) 
+                    return false;
+
+                if (!(pieceAt(0) == Piece.WR) || !(pieceAt(4) == Piece.WK))
+                    return false;
+
                 if ((isSquareAttacked(2, false)))
                     return false;
+
+
                 if ((isSquareAttacked(3, false)))
                     return false;
             } else {
                 if (gameState.hasRight(Constants.BLACK_QUEENSIDE_CASTLING_MASK)) 
                     return false;
+
+                if ((board.occupied & Constants.BQ_CASTLING_BETWEEN_MASK) != 0L) 
+                    return false;
+
+                if (!(pieceAt(56) == Piece.WR) || !(pieceAt(60) == Piece.WK))
+                    return false;
+
                 if ((isSquareAttacked(58, true)))
                     return false;
+
                 if ((isSquareAttacked(59, true)))
                     return false;
             }
@@ -120,18 +158,28 @@ public class Position {
         return board.bitboards[index];
     }
 
-    public void makeMove (long move) {
+    public void makeMove (long move, boolean switchSide) {
         moveStack.push(move);
 
-        MoveHandler.makeMove(board, gameState, move);
+        MoveHandler.makeMove(board, gameState, move, switchSide);
         
+        updateOccupancy();
     }
 
-    public void undoMove () {
+    public void undoMove (boolean switchSide) {
         long move = moveStack.pop();
 
-        MoveHandler.undoMove(board, gameState, move);
+        MoveHandler.undoMove(board, gameState, move, switchSide);
         
+        updateOccupancy();
+    }
+
+    public void updateOccupancy () {
+        long[] bitboards = board.bitboards;
+        board.whitePieces = bitboards[Piece.WP] | bitboards[Piece.WN] | bitboards[Piece.WB] | bitboards[Piece.WR] | bitboards[Piece.WQ] | bitboards[Piece.WK];
+        board.blackPieces = bitboards[Piece.BP] | bitboards[Piece.BN] | bitboards[Piece.BB] | bitboards[Piece.BR] | bitboards[Piece.BQ] | bitboards[Piece.BK];
+
+        board.occupied = board.whitePieces | board.blackPieces;
     }
     
 
@@ -146,13 +194,10 @@ public class Position {
         Position pos = new Position("rnbqkbnr/pppp1p1p/8/6N1/4P3/8/PPPP3p/RNBQKBR1 b Qkq - 1 6");
         
         pos.printPosition();
-        pos.makeMove(Move.createMove(pos, Utility.getSquareIntFromString("h2"), Utility.getSquareIntFromString("g1"), Piece.BQ, false, false));
         
-        pos.printPosition();
+        MoveGenerator.generateLegalMoves(pos);
 
-        pos.undoMove();
-
-        pos.printPosition();
+        
         
     }
     

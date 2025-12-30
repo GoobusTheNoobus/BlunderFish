@@ -83,4 +83,11 @@ public class Move {
 
         return Utility.getStringFromSquareInt(getFromSquare(move)) + Utility.getStringFromSquareInt(getToSquare(move));
     }
+
+    public static void main(String[] args) {
+        System.out.println(createMove(new Position(), 4, 2, 0, true, false));
+        System.out.println(createMove(new Position(), 4, 6, 0, true, false));
+        System.out.println(createMove(new Position(), 60, 58, 0, true, false));
+        System.out.println(createMove(new Position(), 60, 62, 0, true, false));
+    }
 }

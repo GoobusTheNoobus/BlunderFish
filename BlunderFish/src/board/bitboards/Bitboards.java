@@ -64,12 +64,4 @@ public class Bitboards {
     public static long resetBit (long bitboard, int index) {
         return bitboard & ~(1L << index);
     }
-
-    public static void main(String[] args) {
-        initialize();
-        for (int i = 0; i < 12; i ++) {
-            printBitboard(ROOK_ATTACKS[32][i]);
-        }
-    }
-
 }   

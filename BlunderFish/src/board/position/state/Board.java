@@ -61,4 +61,10 @@ public class Board {
         
         occupied = 0L;
     }
+    public void updateOccupancy () {
+        whitePieces = bitboards[Piece.WP] | bitboards[Piece.WN] | bitboards[Piece.WB] | bitboards[Piece.WR] | bitboards[Piece.WQ] | bitboards[Piece.WK];
+        blackPieces = bitboards[Piece.BP] | bitboards[Piece.BN] | bitboards[Piece.BB] | bitboards[Piece.BR] | bitboards[Piece.BQ] | bitboards[Piece.BK];
+
+        occupied = whitePieces | blackPieces;
+    }
 }

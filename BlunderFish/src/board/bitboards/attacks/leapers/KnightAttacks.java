@@ -2,6 +2,7 @@
 
 package board.bitboards.attacks.leapers;
 
+import utils.Constants;
 import utils.Utility;
 
 public class KnightAttacks {
@@ -26,7 +27,7 @@ public class KnightAttacks {
 
                 int square = Utility.parseSquare(rank, file);
 
-                mask |= 1L << square;
+                mask |= Constants.SQUARE_MASKS[square];
 
             }
             // Append to array

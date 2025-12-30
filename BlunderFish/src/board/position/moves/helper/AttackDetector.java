@@ -1,3 +1,5 @@
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
+
 package board.position.moves.helper;
 
 import board.bitboards.Bitboards;
@@ -7,6 +9,10 @@ import board.position.state.Board;
 
 public class AttackDetector {
     public static boolean isSquareAttacked (Board board, int square, boolean white) {
+        if (square >= 64 ) {
+            throw new IllegalArgumentException("square is " + square);
+        }
+
         long mask = 1L << square;
         long pawns = white ? board.bitboards[Piece.WP] : board.bitboards[Piece.BP];
         long knights = white ? board.bitboards[Piece.WN] : board.bitboards[Piece.BN];

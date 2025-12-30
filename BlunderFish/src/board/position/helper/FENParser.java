@@ -1,5 +1,6 @@
-package board.position.helper;
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
 
+package board.position.helper;
 
 import board.position.state.Board;
 import board.position.state.GameState;

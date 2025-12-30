@@ -1,50 +1,77 @@
 /* ---------------------MY FIRST CHESS ENGINE--------------------- */
 
-import board.*;
+import java.util.Arrays;
+
 import board.bitboards.Bitboards;
-import board.position.Piece;
 import board.position.Position;
+import board.position.moves.MoveBuffer;
 import board.position.moves.MoveGenerator;
-import board.position.moves.helper.Move;
+
 import utils.*;
 
 
 
 public class BlunderFish {
     public static void main(String[] args) throws Exception {
-        Bitboards.initialize();
+        initialize();
 
         final int WARMUP_ITERS = 200000;
-        final int TEST_ITERS = 10_000_000;
+        final int TEST_ITERS = 1_000_000;
         
-        /* 
         for (int i = 0; i < WARMUP_ITERS; i++) {
-            
             Position pos = new Position();
-
-            MoveGenerator.generateBishopMoves(pos, false);
-            MoveGenerator.pseudoLegalMoves.clear();
+            MoveBuffer buff = new MoveBuffer(67);
+            MoveGenerator.generatePseudoLegalMoves(pos, buff);
+            buff.clear();
         }
         
-        */
-        
-        
-        Position pos = new Position("rnbqkbn1/pppp1p1p/8/4rPp1/6K1/8/PPPP1PPP/RNBQ1BNR w q - 0 1");
+        // Original: rnbqkbnr/pppp2pp/5p2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 1 3
+        // Blocked: rnbqkbnr/pppp3p/5pp1/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 4
 
+        Position pos = new Position();
+        
         Timer.start();
 
-        for (int i = 0; i < TEST_ITERS; i ++) {
-            
+        for (int i = 0; i < TEST_ITERS; i++) {
+            // MoveGenerator.generateLegalMoves(pos);
         }
 
         Timer.stop();
-
-        Bitboards.printBitboard(pos.board.bitboards[Piece.BK]);
-        MoveGenerator.generateLegalMoves(pos);
         
+        System.out.println(generationTest(5, pos));
         MoveGenerator.legalMoves.printMoveList();
-        Timer.printAverageTime(TEST_ITERS);
 
+        Timer.printAverageTime(TEST_ITERS);
+        
+
+    }
+
+    static int generationTest (int depth, Position pos) {
+        if (depth == 0) {
+            return 1;
+        }
+
+        MoveBuffer buff = new MoveBuffer(512);
+        MoveGenerator.generateLegalMoves(pos, buff);
+        
+        int numPosition = 0;
+
+        for (int i = 0; i < buff.size(); i++) {
+            long move = buff.getElementByIndex(i);
+            Position oldPos = new Position();
+            oldPos.gameState = pos.gameState.
+            pos.makeMove(move, true);
+            numPosition += generationTest(depth - 1, pos);
+            pos.undoMove(true);
+        }
+
+        return numPosition;
+    }
+
+    static void initialize() {
+        Constants.initialize();
+        Bitboards.initialize();
+        
     }
 }
    

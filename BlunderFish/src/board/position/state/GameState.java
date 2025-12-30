@@ -37,4 +37,15 @@ public class GameState {
     public void switchSide () {
         whiteToMove = !whiteToMove;
     }
+
+    @Override
+    protected GameState clone() throws CloneNotSupportedException {
+        GameState newGameState = new GameState();
+        newGameState.castlingRights = castlingRights;
+        newGameState.enPassantSquare = enPassantSquare;
+        newGameState.whiteToMove = whiteToMove;
+        newGameState.fiftyMoveClock = fiftyMoveClock;
+
+        return newGameState;
+    }
 }

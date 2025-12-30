@@ -1,3 +1,5 @@
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
+
 package board.position.moves.helper;
 
 import board.position.state.*;
@@ -6,41 +8,44 @@ import board.position.Piece;;
 
 public class MoveMaker {
     public static void castle (boolean kingside, GameState state, Board board) {
+        switch (kingside) {
+            case true:
+                if (state.whiteToMove) {
+                    clearSquare(board, 4);
+                    clearSquare(board, 7);
+                    setPiece(board, 5, Piece.WR);
+                    setPiece(board, 6, Piece.WK);
+
+                    state.removeRight(Constants.WHITE_CASTLING_RIGHTS);
+                } else {
+                    clearSquare(board, 60);
+                    clearSquare(board, 63);
+                    setPiece(board, 61, Piece.BR);
+                    setPiece(board, 62, Piece.BK);
+
+                    state.removeRight(Constants.BLACK_CASTLING_RIGHTS);
+                }
+                break;
+            default:
+                if (state.whiteToMove) {
+                    clearSquare(board, 4);
+                    clearSquare(board, 0);
+                    setPiece(board, 3, Piece.WR);
+                    setPiece(board, 2, Piece.WK);
+
+                    state.removeRight(Constants.WHITE_CASTLING_RIGHTS);
+                } else {
+                    clearSquare(board, 60);
+                    clearSquare(board, 56);
+                    setPiece(board, 59, Piece.BR);
+                    setPiece(board, 58, Piece.BK);
+
+                    state.removeRight(Constants.BLACK_CASTLING_RIGHTS);
+                }
+        }
+
         
-        if (kingside) {
-            if (state.whiteToMove) {
-                clearSquare(board, 4);
-                clearSquare(board, 7);
-                setPiece(board, 5, Piece.WR);
-                setPiece(board, 6, Piece.WK);
-
-                state.removeRight(Constants.WHITE_KINGSIDE_CASTLING_MASK & Constants.WHITE_QUEENSIDE_CASTLING_MASK);
-            } else {
-                clearSquare(board, 60);
-                clearSquare(board, 63);
-                setPiece(board, 61, Piece.WR);
-                setPiece(board, 62, Piece.WK);
-
-                state.removeRight(Constants.BLACK_KINGSIDE_CASTLING_MASK & Constants.BLACK_QUEENSIDE_CASTLING_MASK);
-            }
-        }
-        else {
-            if (state.whiteToMove) {
-                clearSquare(board, 4);
-                clearSquare(board, 0);
-                setPiece(board, 3, Piece.WR);
-                setPiece(board, 2, Piece.WK);
-
-                state.removeRight(Constants.WHITE_KINGSIDE_CASTLING_MASK & Constants.WHITE_QUEENSIDE_CASTLING_MASK);
-            } else {
-                clearSquare(board, 60);
-                clearSquare(board, 56);
-                setPiece(board, 59, Piece.WR);
-                setPiece(board, 58, Piece.WK);
-
-                state.removeRight(Constants.BLACK_KINGSIDE_CASTLING_MASK & Constants.BLACK_QUEENSIDE_CASTLING_MASK);
-            }
-        }
+        
     }
     
     public static void normalMove (int from, int to, GameState state, Board board) {
@@ -68,11 +73,11 @@ public class MoveMaker {
 
     public static void setPiece (Board board, int square, int piece) {
         board.mailbox[square] = piece;
-        board.bitboards[piece] |= 1L << square;
+        board.bitboards[piece] |= Constants.SQUARE_MASKS[square];
     }
     public static void clearSquare (Board board, int square) {
         int index = board.mailbox[square];
         board.mailbox[square] = Piece.NONE;
-        board.bitboards[index] &= ~(1L << square); 
+        board.bitboards[index] &= ~Constants.SQUARE_MASKS[square]; 
     }
 }

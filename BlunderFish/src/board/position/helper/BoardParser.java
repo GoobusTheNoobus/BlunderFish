@@ -1,3 +1,5 @@
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
+
 package board.position.helper;
 
 import board.position.Piece;
@@ -77,14 +79,8 @@ public class BoardParser {
 
                 pointer ++;
             }
-            updateOccupancy(board);
+            board.updateOccupancy();
         }
     }
-    public static void updateOccupancy (Board board) {
-        long[] bitboards = board.bitboards;
-        board.whitePieces = bitboards[Piece.WP] | bitboards[Piece.WN] | bitboards[Piece.WB] | bitboards[Piece.WR] | bitboards[Piece.WQ] | bitboards[Piece.WK];
-        board.blackPieces = bitboards[Piece.BP] | bitboards[Piece.BN] | bitboards[Piece.BB] | bitboards[Piece.BR] | bitboards[Piece.BQ] | bitboards[Piece.BK];
-
-        board.occupied = board.whitePieces | board.blackPieces;
-    }
+    
 }

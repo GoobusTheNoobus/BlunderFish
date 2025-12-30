@@ -1,5 +1,8 @@
 package board.position.state;
 
+import board.position.moves.helper.Move;
+import java.util.Arrays;
+
 public class MoveStack {
     private long[] moves;
     private int stackPointer;
@@ -23,5 +26,21 @@ public class MoveStack {
 
     public long peek () {
         return moves[stackPointer - 1];
+    }
+
+    public void printStack () {
+        for (int i = stackPointer; i >= 0; i--) {
+            System.out.println(Move.toString(moves[i]));
+        }
+    }
+    
+    @Override
+    public MoveStack clone() throws CloneNotSupportedException {
+        MoveStack newMoveStack = new MoveStack(moves.length);
+
+        newMoveStack.moves = Arrays.copyOf(moves, moves.length);
+        newMoveStack.stackPointer = stackPointer;
+
+        return newMoveStack;
     }
 }

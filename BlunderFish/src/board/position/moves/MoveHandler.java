@@ -1,3 +1,5 @@
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
+
 package board.position.moves;
 
 import board.position.Piece;
@@ -9,8 +11,8 @@ import board.position.state.GameState;
 import utils.Constants;
 
 public class MoveHandler {
-    public static void undoMove (Board board, GameState state, long move) {
-        state.switchSide();
+    public static void undoMove (Board board, GameState state, long move, boolean switchSide) {
+        if (switchSide) state.switchSide();
 
         int flag = Move.getFlag(move);
         int from = Move.getFromSquare(move);
@@ -23,6 +25,10 @@ public class MoveHandler {
 
         int previousCastlingRights = Move.getCastlingRights(move);
         // MoveUndoer::unCastle(Board board, boolean white, boolean kingSide)
+        switch(flag) {
+            
+        }
+
         if (flag == Constants.CASTLING_KINGSIDE_FLAG) {
             if (state.whiteToMove) {
                 MoveUndoer.unCastle(board, true, true);
@@ -69,7 +75,7 @@ public class MoveHandler {
         
     }
 
-    public static void makeMove (Board board, GameState state, long move) {
+    public static void makeMove (Board board, GameState state, long move, boolean switchSide) {
 
         int flag = Move.getFlag(move);
         int from = Move.getFromSquare(move);
@@ -82,14 +88,14 @@ public class MoveHandler {
             MoveMaker.castle(true, state, board);
 
             state.enPassantSquare = 64;
-            state.switchSide();
+            
         } 
         
         else if (flag == Constants.CASTLING_QUEENSIDE_FLAG) {
             MoveMaker.castle(false, state, board);
 
             state.enPassantSquare = 64;
-            state.switchSide();
+            
         } 
         
         else if (flag == Constants.EN_PASSANT_FLAG) {
@@ -97,14 +103,14 @@ public class MoveHandler {
             MoveMaker.clearSquare(board, state.whiteToMove ? to - 8 : to + 8);
 
             state.enPassantSquare = 64;
-            state.switchSide();
+            
         } 
         
         else if (flag == Constants.DOUBLE_PAWN_PUSH) {
             MoveMaker.normalMove(from, to, state, board);
 
             state.enPassantSquare = state.whiteToMove ? to - 8 : to + 8;
-            state.switchSide();
+            
         } 
 
         
@@ -146,8 +152,10 @@ public class MoveHandler {
                 assert pieceMoved == Piece.WP || pieceMoved == Piece.BP;
             }
             state.enPassantSquare = 64;
-            state.switchSide();
+            
+        
         }
         
+        if (switchSide) state.switchSide();
     }
 }

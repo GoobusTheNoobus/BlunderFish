@@ -2,6 +2,8 @@
 
 package board.bitboards.attacks.leapers;
 
+import board.bitboards.Bitboards;
+import utils.Constants;
 import utils.Utility;
 
 public class PawnAttacks {
@@ -65,5 +67,17 @@ public class PawnAttacks {
             attacks[i] = mask;
         }
         return attacks;
+    }
+
+    public static void main(String[] args) {
+        long [] a = precomputeBlack();
+
+        for (int i = 0; i < 64; i++) {
+
+            System.out.println("Pawn square");
+            Bitboards.printBitboard(1L << i);
+            System.out.println("\nAttacks");
+            Bitboards.printBitboard(a[i]);
+        }
     }
 }

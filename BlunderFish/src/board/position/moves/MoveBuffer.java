@@ -1,11 +1,11 @@
-package board.position.moves;
+/* ---------------------MY FIRST CHESS ENGINE--------------------- */
 
-import java.util.Arrays;
+package board.position.moves;
 
 import board.position.moves.helper.Move;
 
 public class MoveBuffer {
-    private long[] internalArray;
+    public long[] internalArray;
     private int size;
 
     public MoveBuffer(int maxCapacity) {
@@ -25,12 +25,12 @@ public class MoveBuffer {
     } 
 
     public void clear() {
-        Arrays.fill(internalArray, 0L);
+        size = 0;
     }
 
     public void printMoveList() {
         for (int index = 0; index < size; index++) {
-            System.out.println(Move.toString(internalArray[index]));
+            System.out.printf("Move: %s (%d)\n", Move.toString(internalArray[index]), internalArray[index]);
         }
         System.out.println("Size: " + size);
     }
