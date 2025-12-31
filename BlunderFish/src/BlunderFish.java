@@ -6,7 +6,7 @@ import board.bitboards.Bitboards;
 import board.position.Position;
 import board.position.moves.MoveBuffer;
 import board.position.moves.MoveGenerator;
-
+import board.position.moves.helper.Move;
 import utils.*;
 
 
@@ -46,7 +46,7 @@ public class BlunderFish {
 
     }
 
-    static int generationTest (int depth, Position pos) {
+    static int generationTest (int depth, Position pos) throws Exception {
         if (depth == 0) {
             return 1;
         }
@@ -58,11 +58,17 @@ public class BlunderFish {
 
         for (int i = 0; i < buff.size(); i++) {
             long move = buff.getElementByIndex(i);
-            Position oldPos = new Position();
-            oldPos.gameState = pos.gameState.
+            Position oldPos = pos.clone();
             pos.makeMove(move, true);
             numPosition += generationTest(depth - 1, pos);
             pos.undoMove(true);
+
+            if (!Arrays.equals(oldPos.board.mailbox, pos.board.mailbox)) {
+                oldPos.printPosition();
+                pos.printPosition();
+                System.out.println(Move.toString(move));
+                throw new IllegalStateException("MakeMove and UndoMove did not create the same position");
+            }
         }
 
         return numPosition;

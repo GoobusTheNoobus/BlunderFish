@@ -189,6 +189,17 @@ public class Position {
         PositionPrinter.printGameState(gameState);
     }
 
+    @Override
+    public Position clone() throws CloneNotSupportedException {
+        Position newPos = new Position();
+
+        newPos.board = board.clone();
+        newPos.gameState = gameState.clone();
+        newPos.moveStack = moveStack.clone();
+
+        return newPos;
+    }
+
     // This is just for debugging purposes. This class is not meant to run on its own
     public static void main(String[] args) {
         Position pos = new Position("rnbqkbnr/pppp1p1p/8/6N1/4P3/8/PPPP3p/RNBQKBR1 b Qkq - 1 6");

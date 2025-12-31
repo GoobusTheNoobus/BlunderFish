@@ -39,7 +39,7 @@ public class GameState {
     }
 
     @Override
-    protected GameState clone() throws CloneNotSupportedException {
+    public GameState clone() throws CloneNotSupportedException {
         GameState newGameState = new GameState();
         newGameState.castlingRights = castlingRights;
         newGameState.enPassantSquare = enPassantSquare;

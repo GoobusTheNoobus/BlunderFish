@@ -67,4 +67,17 @@ public class Board {
 
         occupied = whitePieces | blackPieces;
     }
+
+    @Override
+    public Board clone() throws CloneNotSupportedException {
+        Board newBoard = new Board();
+
+        newBoard.bitboards = Arrays.copyOf(bitboards, 13);
+        newBoard.mailbox = Arrays.copyOf(mailbox, 64);
+        newBoard.whitePieces = whitePieces;
+        newBoard.blackPieces = blackPieces;
+        newBoard.occupied = occupied;
+
+        return newBoard;
+    }
 }
