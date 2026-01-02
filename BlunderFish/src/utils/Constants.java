@@ -5,7 +5,6 @@
 
 package utils;
 
-import board.bitboards.Bitboards;
 
 public class Constants {
 

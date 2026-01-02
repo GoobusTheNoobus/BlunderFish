@@ -3,7 +3,6 @@
 package board.bitboards;
 
 import board.bitboards.attacks.sliders.*;
-import utils.Utility;
 import board.bitboards.attacks.leapers.*;;
 
 

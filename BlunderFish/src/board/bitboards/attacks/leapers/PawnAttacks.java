@@ -3,7 +3,6 @@
 package board.bitboards.attacks.leapers;
 
 import board.bitboards.Bitboards;
-import utils.Constants;
 import utils.Utility;
 
 public class PawnAttacks {

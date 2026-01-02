@@ -1,7 +1,5 @@
 package board.position.moves.helper;
 
-import javax.swing.text.Utilities;
-
 import utils.Utility;
 
 public final class MoveStruct {

@@ -2,7 +2,6 @@
 
 package board.bitboards.attacks.sliders;
 
-import board.bitboards.Bitboards;
 import utils.Utility;
 
 public class BishopAttacks {
@@ -74,25 +73,10 @@ public class BishopAttacks {
             int hashIndex = Hash.hash(blockers, square, false);
 
             attacks[hashIndex] = raycast(square, blockers);
-
-            /*if (hashIndex == 0) {
-
-            System.out.println("The hash is: " + hashIndex);
-            System.out.println("The blocker config is");
-            Bitboards.printBitboard(blockers);
-            System.out.println("Attack in that array is: ");
-            Bitboards.printBitboard(attacks[hashIndex]);
-            }*/
             
         }
 
         return attacks;
 
-    }
-
-    public static void main(String[] args) {
-        AttackMasks.initializeMasks();
-
-        precomputePerSquare(45);
     }
 }

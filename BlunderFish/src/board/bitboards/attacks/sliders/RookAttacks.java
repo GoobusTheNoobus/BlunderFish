@@ -2,7 +2,6 @@
 
 package board.bitboards.attacks.sliders;
 
-import board.bitboards.Bitboards;
 import utils.Utility;
 
 public class RookAttacks {
@@ -80,10 +79,5 @@ public class RookAttacks {
 
         return attacks;
 
-    }
-    public static void main(String[] args) {
-        AttackMasks.initializeMasks();
-
-        precomputePerSquare(45);
     }
 }

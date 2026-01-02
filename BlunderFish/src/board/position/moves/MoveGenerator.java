@@ -2,7 +2,6 @@
 
 package board.position.moves;
 
-import javax.sound.midi.SysexMessage;
 
 import board.bitboards.Bitboards;
 import board.position.Piece;
