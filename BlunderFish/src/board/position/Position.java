@@ -21,6 +21,8 @@ import board.position.moves.helper.AttackDetector;
 public class Position {
     public String defaultPositionFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
+    
+
     // Move history for undoing moves
     public MoveStack moveStack = new MoveStack(256);
 
@@ -83,32 +85,50 @@ public class Position {
     }
 
     public boolean canCastle (boolean kingSide) {
+        if (isInCheck()) return false;
         if (kingSide) {
             if (gameState.whiteToMove) {
-                if (gameState.hasRight(Constants.WHITE_KINGSIDE_CASTLING_MASK)) 
+                if (!gameState.hasRight(Constants.WHITE_KINGSIDE_CASTLING_MASK)) {
+                    
+                    // System.out.println(Integer.toBinaryString(gameState.castlingRights));
                     return false;
+                }
+                    
 
-                if ((board.occupied & Constants.WK_CASTLING_BETWEEN_MASK) != 0L) 
+                if ((board.occupied & Constants.WK_CASTLING_BETWEEN_MASK) != 0L) {
+                    // System.out.println("In between square occupied");
                     return false;
+                }
+                    
 
-                if (!(pieceAt(7) == Piece.WR) || !(pieceAt(4) == Piece.WK))
+                if (!(pieceAt(7) == Piece.WR) || !(pieceAt(4) == Piece.WK)){
+                    // System.out.println("The corresponding squares do not have correct piece");
                     return false;
+                    
+                }
+                    
 
-                if (isSquareAttacked(5, false)) 
+                if (isSquareAttacked(5, false))  {
+                    // System.out.println("Castling through check");
                     return false;
+                }
+                    
                 
-                if (isSquareAttacked(6, false)) 
+                if (isSquareAttacked(6, false)) {
+                    // System.out.println("Castling into check");
                     return false;
+                }
+                    
 
 
             } else {
-                if (gameState.hasRight(Constants.BLACK_KINGSIDE_CASTLING_MASK)) 
+                if (!gameState.hasRight(Constants.BLACK_KINGSIDE_CASTLING_MASK)) 
                     return false;
 
                 if ((board.occupied & Constants.BK_CASTLING_BETWEEN_MASK) != 0L) 
                     return false;
 
-                if (!(pieceAt(63) == Piece.WR) || !(pieceAt(60) == Piece.WK))
+                if (!(pieceAt(63) == Piece.BR) || !(pieceAt(60) == Piece.BK))
                     return false;
 
                 if (isSquareAttacked(61, true))
@@ -119,7 +139,7 @@ public class Position {
             }
         } else {
             if (gameState.whiteToMove) {
-                if (gameState.hasRight(Constants.WHITE_QUEENSIDE_CASTLING_MASK))
+                if (!gameState.hasRight(Constants.WHITE_QUEENSIDE_CASTLING_MASK))
                     return false;
 
                 if ((board.occupied & Constants.WQ_CASTLING_BETWEEN_MASK) != 0L) 
@@ -135,13 +155,13 @@ public class Position {
                 if ((isSquareAttacked(3, false)))
                     return false;
             } else {
-                if (gameState.hasRight(Constants.BLACK_QUEENSIDE_CASTLING_MASK)) 
+                if (!gameState.hasRight(Constants.BLACK_QUEENSIDE_CASTLING_MASK)) 
                     return false;
 
                 if ((board.occupied & Constants.BQ_CASTLING_BETWEEN_MASK) != 0L) 
                     return false;
 
-                if (!(pieceAt(56) == Piece.WR) || !(pieceAt(60) == Piece.WK))
+                if (!(pieceAt(56) == Piece.BR) || !(pieceAt(60) == Piece.BK))
                     return false;
 
                 if ((isSquareAttacked(58, true)))

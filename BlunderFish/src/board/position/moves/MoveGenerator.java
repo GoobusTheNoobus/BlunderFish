@@ -2,6 +2,8 @@
 
 package board.position.moves;
 
+import javax.sound.midi.SysexMessage;
+
 import board.bitboards.Bitboards;
 import board.position.Piece;
 import board.position.Position;
@@ -29,11 +31,18 @@ public class MoveGenerator {
             pos.undoMove(false);
         }
 
-        if (pos.isInCheck()) return;
+        
 
-        if (pos.canCastle(false)) buff.append(Move.createMove(pos, pos.gameState.whiteToMove ? 4 : 60, pos.gameState.whiteToMove ? 2 : 58, 0, true, false));
+        if (pos.canCastle(false)) {
+            buff.append(Move.createMove(pos, pos.gameState.whiteToMove ? 4 : 60, pos.gameState.whiteToMove ? 2 : 58, 0, true, false));
+            
 
-        if (pos.canCastle(true)) buff.append(Move.createMove(pos, pos.gameState.whiteToMove ? 4 : 60, pos.gameState.whiteToMove ? 6 : 62, 0, true, false));
+        }
+
+        if (pos.canCastle(true)) {
+            buff.append(Move.createMove(pos, pos.gameState.whiteToMove ? 4 : 60, pos.gameState.whiteToMove ? 6 : 62, 0, true, false));
+            
+        } 
     }
 
     public static void generateLegalMoves (Position pos) {
@@ -56,8 +65,17 @@ public class MoveGenerator {
             }  
             pos.undoMove(false);
         }
-
         
+        if (pos.canCastle(false)) {
+            buff.append(Move.createMove(pos, pos.gameState.whiteToMove ? 4 : 60, pos.gameState.whiteToMove ? 2 : 58, 0, true, false));
+            System.out.println("Can castle queenside");
+
+        }
+
+        if (pos.canCastle(true)) {
+            buff.append(Move.createMove(pos, pos.gameState.whiteToMove ? 4 : 60, pos.gameState.whiteToMove ? 6 : 62, 0, true, false));
+            System.out.println("Can castle kingside");
+        } 
     }
     // PSEUDO-LEGAL MOVE GENERATION: CRINGE CODE AHEAD !!!
 
@@ -87,7 +105,7 @@ public class MoveGenerator {
                     }
 
                     // Now for double pawn push
-                    if (fromRank == 1) {
+                    if (fromRank == 1 && !isOccupied(pos.board.occupied, to + 8)) {
                         int doublePushTo = from + 16;
                         if (!isOccupied(pos.board.occupied, doublePushTo))
                             buff.append(Move.createMove(pos, from, doublePushTo, Piece.NONE, false, false));
@@ -115,7 +133,7 @@ public class MoveGenerator {
                 if (pos.gameState.enPassantSquare != 64) {
                     long enPassantBitboard = 1L << pos.gameState.enPassantSquare;
                     if ((enPassantBitboard & Bitboards.WHITE_PAWN_ATTACKS[from]) != 0L) {
-                        buff.append(Move.createMove(pos, from, to, Piece.NONE, false, true));
+                        buff.append(Move.createMove(pos, from, pos.gameState.enPassantSquare, Piece.NONE, false, true));
                     }
                 }
 
@@ -146,7 +164,7 @@ public class MoveGenerator {
                     }
 
                     // Double Push
-                    if (fromRank == 6) {
+                    if (fromRank == 6 && !isOccupied(pos.board.occupied, to - 8)) {
                         int doublePushTo = from - 16;
                         if (!isOccupied(pos.board.occupied, doublePushTo)) {
                             buff.append(Move.createMove(pos, from, doublePushTo, Piece.NONE, false, false));
@@ -264,10 +282,12 @@ public class MoveGenerator {
         long pieces = white? pos.fetchBitboard(Piece.WQ): pos.fetchBitboard(Piece.BQ);
         long friendlies = white? pos.board.whitePieces: pos.board.blackPieces;
 
+        
         while (pieces != 0L) {
             int from = Long.numberOfTrailingZeros(pieces);
 
             long attackBitboard = (Bitboards.getBishopAttack(pos.board.occupied, from) | Bitboards.getRookAttack(pos.board.occupied, from)) & ~friendlies;
+            
 
             while (attackBitboard != 0L) {
                 int to = Long.numberOfTrailingZeros(attackBitboard);

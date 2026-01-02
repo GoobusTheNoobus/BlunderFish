@@ -14,6 +14,10 @@ public class Utility {
     }
 
     public static String getStringFromSquareInt(int square) {
+        if (square == 64) {
+            return "None";
+        }
+
         int file = square & 7;
         int rank = square >> 3;
 

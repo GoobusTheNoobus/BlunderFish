@@ -2,6 +2,7 @@
 
 package board.bitboards.attacks.sliders;
 
+import board.bitboards.Bitboards;
 import utils.Utility;
 
 public class RookAttacks {
@@ -69,11 +70,20 @@ public class RookAttacks {
         for (int index = 0; index < (1 << RELEVANT_ROOK_BITS[square]); index++) {
             long blockers = SliderHelper.indexToBlockers(index, AttackMasks.ROOK_MASKS[square]);
 
+            int hashIndex = Hash.hash(blockers, square, true);
+            attacks[hashIndex] = raycast(square, blockers);
 
-            attacks[Hash.hash(blockers, square, true)] = raycast(square, blockers);
+            /*System.out.println("The hash is: " + hashIndex);
+            System.out.println("Attack in that array is: ");
+            Bitboards.printBitboard(attacks[hashIndex]);*/
         }
 
         return attacks;
 
+    }
+    public static void main(String[] args) {
+        AttackMasks.initializeMasks();
+
+        precomputePerSquare(45);
     }
 }

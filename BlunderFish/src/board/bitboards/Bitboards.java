@@ -3,6 +3,7 @@
 package board.bitboards;
 
 import board.bitboards.attacks.sliders.*;
+import utils.Utility;
 import board.bitboards.attacks.leapers.*;;
 
 
@@ -63,5 +64,9 @@ public class Bitboards {
 
     public static long resetBit (long bitboard, int index) {
         return bitboard & ~(1L << index);
+    }
+    public static void main(String[] args) {
+        initialize();
+        printBitboard(BishopAttacks.raycast(45, 0));
     }
 }   

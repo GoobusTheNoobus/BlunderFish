@@ -3,6 +3,7 @@
 import java.util.Arrays;
 
 import board.bitboards.Bitboards;
+import board.position.Piece;
 import board.position.Position;
 import board.position.moves.MoveBuffer;
 import board.position.moves.MoveGenerator;
@@ -28,8 +29,9 @@ public class BlunderFish {
         // Original: rnbqkbnr/pppp2pp/5p2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 1 3
         // Blocked: rnbqkbnr/pppp3p/5pp1/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 4
 
-        Position pos = new Position();
-        
+        Position pos = new Position("rnbqkbnr/p6p/4pP2/1pPp3P/6p1/8/PPP2PP1/RNBQKBNR w KQkq b6 0 8");
+        Position newPos = pos.clone();
+
         Timer.start();
 
         for (int i = 0; i < TEST_ITERS; i++) {
@@ -38,9 +40,13 @@ public class BlunderFish {
 
         Timer.stop();
         
-        System.out.println(generationTest(5, pos));
-        MoveGenerator.legalMoves.printMoveList();
+        pos.printPosition();
+        pos.makeMove(Move.createMove(newPos, Utility.getSquareIntFromString("c5"), Utility.getSquareIntFromString("b6"), Piece.NONE, false, true), false);
 
+        pos.undoMove(false);
+        pos.printPosition();
+
+        assert Arrays.equals(pos.board.mailbox, newPos.board.mailbox);
         Timer.printAverageTime(TEST_ITERS);
         
 
@@ -66,6 +72,7 @@ public class BlunderFish {
             if (!Arrays.equals(oldPos.board.mailbox, pos.board.mailbox)) {
                 oldPos.printPosition();
                 pos.printPosition();
+                
                 System.out.println(Move.toString(move));
                 throw new IllegalStateException("MakeMove and UndoMove did not create the same position");
             }
