@@ -43,7 +43,7 @@ public class Constants {
     public static final long BK_CASTLING_BETWEEN_MASK = (1L << 61) | (1L << 62);
     public static final long BQ_CASTLING_BETWEEN_MASK = (1L << 57) | (1L << 58) | (1L << 59);
 
-
+    
     public static void initialize() {
         for (int i = 0; i < 64; i++) {
             SQUARE_MASKS[i] = 1L << i;

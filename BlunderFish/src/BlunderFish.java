@@ -8,6 +8,8 @@ import board.position.Position;
 import board.position.moves.MoveBuffer;
 import board.position.moves.MoveGenerator;
 import board.position.moves.helper.Move;
+import eval.Search;
+import eval.utils.EvalUtil;
 import utils.*;
 
 
@@ -29,62 +31,41 @@ public class BlunderFish {
         // Original: rnbqkbnr/pppp2pp/5p2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 1 3
         // Blocked: rnbqkbnr/pppp3p/5pp1/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 4
 
-        Position pos = new Position("rnbqkbnr/p6p/4pP2/1pPp3P/6p1/8/PPP2PP1/RNBQKBNR w KQkq b6 0 8");
-        Position newPos = pos.clone();
+        Position pos = new Position("1k1rr3/ppp2Q1p/6p1/8/2P5/P2qp3/1P1P1bPP/RNBK3n w - - 0 29");
 
         Timer.start();
 
-        for (int i = 0; i < TEST_ITERS; i++) {
-            // MoveGenerator.generateLegalMoves(pos);
-        }
+        System.out.println(Move.toString(Search.getBestMove(pos, 4)));
+        System.out.println();
 
         Timer.stop();
         
-        pos.printPosition();
-        pos.makeMove(Move.createMove(newPos, Utility.getSquareIntFromString("c5"), Utility.getSquareIntFromString("b6"), Piece.NONE, false, true), false);
-
-        pos.undoMove(false);
-        pos.printPosition();
-
-        assert Arrays.equals(pos.board.mailbox, newPos.board.mailbox);
-        Timer.printAverageTime(TEST_ITERS);
+        
+        Timer.printTime();
         
 
-    }
-
-    static int generationTest (int depth, Position pos) throws Exception {
-        if (depth == 0) {
-            return 1;
-        }
-
-        MoveBuffer buff = new MoveBuffer(512);
-        MoveGenerator.generateLegalMoves(pos, buff);
-        
-        int numPosition = 0;
-
-        for (int i = 0; i < buff.size(); i++) {
-            long move = buff.getElementByIndex(i);
-            Position oldPos = pos.clone();
-            pos.makeMove(move, true);
-            numPosition += generationTest(depth - 1, pos);
-            pos.undoMove(true);
-
-            if (!Arrays.equals(oldPos.board.mailbox, pos.board.mailbox)) {
-                oldPos.printPosition();
-                pos.printPosition();
-                
-                System.out.println(Move.toString(move));
-                throw new IllegalStateException("MakeMove and UndoMove did not create the same position");
-            }
-        }
-
-        return numPosition;
     }
 
     static void initialize() {
         Constants.initialize();
         Bitboards.initialize();
         
+    }
+
+    static void playSelf (Position pos, int depth) {
+        while (true) {
+            long bestMove = Search.getBestMove(pos, depth);
+
+            if (bestMove == -1L) {
+                System.out.println("The game has ended!");
+                break;
+            }
+
+            System.out.println(Move.toString(bestMove));
+
+            pos.makeMove(bestMove, true);
+
+        }
     }
 }
    
